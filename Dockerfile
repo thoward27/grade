@@ -1,40 +1,42 @@
 FROM gradescope/auto-builds:latest as base
 
+# First let's just get things updated.
 RUN apt-get -y update --fix-missing && apt-get -y upgrade
-RUN apt-get update && apt-get install -y \
+
+# Dependancies
+RUN apt-get install -y \
     make \
-    clang \
     gcc \
+    clang \
     valgrind \
-    netpbm \
-    libnetpbm10-dev \
+    git \
+    build-essential \
     software-properties-common \
-    libsigsegv2 \
-    libsigsegv-dev \
-    libjpeg-dev \
-    libjpeg-progs \
-    python3-pip
+    wget \
+    curl \
+    libssl-dev \
+    zlib1g-dev \
+    libbz2-dev \
+    libreadline-dev \
+    libncurses5-dev \
+    libncursesw5-dev \
+    libffi-dev \
+    liblzma-dev \
+    libsqlite3-dev \
+    llvm \
+    xz-utils \
+    python-openssl
+
+# Install pyenv
+RUN curl https://pyenv.run | bash
+ENV PATH /root/.pyenv/shims:/root/.pyenv/bin:$PATH
+
+RUN pyenv install 3.8.0 && pyenv global 3.8.0 && pyenv rehash
 
 # Python 3.8 patch.
-RUN add-apt-repository ppa:deadsnakes/ppa && apt-get update && apt-get install -y python3.8 python3.8-distutils
+# RUN add-apt-repository ppa:deadsnakes/ppa && apt-get update && apt-get install -y python3.8 python3.8-distutils
 
-COPY . /autograder/source/
-COPY run_autograder /autograder/
+RUN python -m pip install gradescope-utils
 
-# CII
-RUN cd /autograder/source/cii && /bin/sh /autograder/source/cii/install-cii.sh
-
-# PNM Reader
-RUN cd /autograder/source/pnmrdr && make && make install
-
-# Unblack Testing
-RUN cd /autograder/source/unblacktest && /bin/sh compile && cp unblacktest /usr/local/bin/
-
-RUN mkdir /autograder/results
-
-RUN python3.8 -m pip install gradescope-utils
-WORKDIR /autograder
-ENTRYPOINT ["sh"]
-CMD ["run_autograder"]
-
-COPY ./solution/ /autograder/submission/
+ENTRYPOINT ["bash"]
+CMD ["python"]

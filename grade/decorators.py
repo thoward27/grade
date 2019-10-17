@@ -3,6 +3,8 @@
 https://github.com/gradescope/gradescope-utils/blob/master/gradescope_utils/autograder_utils/decorators.py
 """
 
+from gradescope_utils.autograder_utils.decorators import weight, visibility
+
 class weight(object):
     """Simple decorator to add a __weight__ property to a function
     Usage: @weight(3.0)
@@ -30,18 +32,6 @@ class visibility(object):
 
     def __call__(self, func):
         func.__visibility__ = self.val
-        return func
-
-
-class tags(object):
-    """Simple decorator to add a __tags__ property to a function
-    Usage: @tags("concept1", "concept2")
-    """
-    def __init__(self, *args):
-        self.tags = args
-
-    def __call__(self, func):
-        func.__tags__ = self.tags
         return func
 
 

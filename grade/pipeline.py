@@ -7,7 +7,7 @@ from typing import Union, List
 
 
 class Pipeline:
-    def __init__(self, callbacks):
+    def __init__(self, *callbacks):
         self.callbacks = callbacks
 
     def __call__(self):
@@ -163,3 +163,4 @@ class WriteOutputs:
         WriteStdout(results, testcase + '.stdout', True)
         WriteStderr(results, testcase + '.stderr', True)
         return results
+
