@@ -1,9 +1,22 @@
+""" Tests for the mixins module.
+"""
 import unittest
 
 from grade.mixins import *
 
 
 class TestScoringMixin(ScoringMixin, unittest.TestCase):
+
+    def test_getTest(self):
+        self.assertEqual(self.getTest().__name__, 'test_getTest')
+        self.assertEqual(
+            self.getTest().__qualname__,
+            'TestScoringMixin.test_getTest'
+        )
+
+    def test_getTests(self):
+        methods = self.getTests()
+        self.assertTrue(all([name.startswith('test') for name, _ in methods]))
 
     def test_score(self):
         """ Can we modify and recall a tests score? """
@@ -54,7 +67,7 @@ class TestScoringMixin(ScoringMixin, unittest.TestCase):
                     'order': 'desc',
                     'score': 100
                 })
-        
+
         x = Test()
         x.test_something()
         self.assertEqual(x.test_something.__leaderboard_title__, 'Runtime')
