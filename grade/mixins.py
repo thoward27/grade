@@ -11,10 +11,21 @@ class ScoringMixin:
     def __str__(self) -> str:
         return type(self).__name__
 
+    @staticmethod
+    def istest(x) -> bool:
+        if ismethod(x):
+            breakpoint()
+        return ismethod(x) and x.__name__.startswith('test')
+
+    def getTests(self) -> List[Callable]:
+        """ Returns a list of test methods. """
+        return [(key, getattr(self, key)) for key in dir(self) if key.startswith('test')]
+
+
     def getTest(self) -> Callable:
         """ Returns the topmost testing function on the stack. """
         if not self.methods:
-            self.methods = getmembers(self, predicate=ismethod)
+            self.methods = self.getTests()
         
         caller = [frame for frame in stack() if frame.function.startswith('test')][0]
         caller = [func for name, func in self.methods if name == caller.function][0]

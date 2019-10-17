@@ -33,11 +33,10 @@ class Tests(mixins.ScoringMixin, unittest.TestCase):
     # If you want to test for software compilation, at this point,
     # you can just assertTrue(True), since setUpClass already
     # checked that everything you need is there.
-    @unittest.skip
     def test_compile(self):
         """ Test working compilation.
         """
-        self.weight(1)  # Set the weight of the unit test
+        self.weight = 1  # Set the weight of the unit test
         self.assertTrue(True)
         return
 
@@ -68,8 +67,7 @@ class Tests(mixins.ScoringMixin, unittest.TestCase):
         )
 
         # And feel free to use partial credit!
-        print(self.current_score)
-        self.score(self.score + 5)
+        self.score = self.score + 5
 
         # But if you do use the score method,
         # a student will get the full amount of points you add.
@@ -79,12 +77,11 @@ class Tests(mixins.ScoringMixin, unittest.TestCase):
 
         # Now, we can just set score to weight.
 
-        self.score(self.weight)
+        self.score = self.weight
         return
 
     # Grade executable files.
 
-    @unittest.skip
     @decorators.weight(10)
     def test_executable(self):
         """ Checking executables with Pipelines.
@@ -104,11 +101,10 @@ class Tests(mixins.ScoringMixin, unittest.TestCase):
 
     # You can also grade on multiple targets.
 
-    @unittest.skip
     def test_executable_two(self):
         """ Checking multiple runs of an executable.
         """
-        self.weight(10)
+        self.weight = 10
 
         def pipeline(testcase):
             return Pipeline(
@@ -124,7 +120,7 @@ class Tests(mixins.ScoringMixin, unittest.TestCase):
 
         # We can also award partial credit
         results = PartialCredit(map(pipeline, testcases), 10)()
-        self.score(results.score)
+        self.score = results.score
         return
 
 
