@@ -1,7 +1,9 @@
 """ Mixins.
+
+# TODO: Move leaderboard title and order to class attributes, not test.
 """
 from inspect import stack, getmembers, ismethod
-from typing import List, Callable
+from typing import List, Callable, Union
 from collections import namedtuple
 
 class ScoringMixin:
@@ -26,11 +28,15 @@ class ScoringMixin:
         caller = [frame for frame in stack() if frame.function.startswith('test')][0]
         caller = [func for name, func in self.methods if name == caller.function][0]
         return caller
+    
+    def setattr(self, attribute, value) -> None:
+        """ Sets attribute with value in the dictionary. """
+        self.getTest().__dict__[attribute] = value
 
     @property
     def weight(self) -> int:
         """ Returns the weight of the test. """
-        return getattr(self.getTest().__dict__, '__weight__', 0)
+        return getattr(self.getTest(), '__weight__', 0)
 
     @weight.setter
     def weight(self, weight: int) -> None:
@@ -40,7 +46,7 @@ class ScoringMixin:
     @property
     def score(self) -> Union[int, float]:
         """ Returns the current score for the test. """
-        return getattr(self.getTest().__dict__, '__score__', 0)
+        return getattr(self.getTest(), '__score__', 0)
     
     @score.setter
     def score(self, score: Union[int, float]) -> None:
@@ -53,7 +59,7 @@ class ScoringMixin:
         
         This controls whether or not students should see the failing testcase.
         """
-        return getattr(self.getTest().__dict__['__visibility__'], 'visible')
+        return getattr(self.getTest(), '__visibility__', 'visible')
 
     @visibility.setter
     def visibility(self, visibility: str) -> None:
@@ -64,15 +70,36 @@ class ScoringMixin:
     def leaderboard(self) -> dict:
         """ Returns a dictionary with all leaderboard attributes. """
         return {
-            'title': getattr(self.getTest(), '__leaderboard_title__', None),
-            'order': getattr(self.getTest(), '__leaderboard_order__', None),
-            'score': getattr(self.getTest(), '__leaderboard_score__', None)
+            'title': self.leaderboardTitle,
+            'order': self.leaderboardOrder,
+            'score': self.leaderboardScore
         }
 
-    def leaderboard(self, **kwargs) -> None:
-        """ Updates leaderboard attributes.
-        
-        All attributes must start with __leaderboard.
-        """
-        assert(all([p.startswith('__leaderboard') for p in kwargs.keys()]))
-        self.getTest().__dict__.update(**kwargs)
+    @property
+    def leaderboardTitle(self) -> str:
+        """ Returns the leaderboard title attribute for the test. """
+        return getattr(self.getTest(), '__leaderboard_title__', None)
+
+    @leaderboardTitle.setter
+    def leaderboardTitle(self, title) -> None:
+        """ Sets the leaderboard title attribute. """
+        self.getTest().__dict__['__leaderboard_title__'] = title
+
+    @property
+    def leaderboardOrder(self) -> str:
+        """ Return the leaderboard order attribute. """
+        return getattr(self.getTest(), '__leaderboard_order__', None)
+
+    @leaderboardOrder.setter
+    def leaderboardOrder(self, order) -> None:
+        """ Sets the leaderboard oreder attribute. """
+        self.getTest().__dict__['__leaderboard_order__'] = order
+
+    @property
+    def leaderboardScore(self) -> Union[int, None]:
+        return getattr(self.getTest(), '__leaderboard_score__', None)
+
+    @leaderboardScore.setter
+    def leaderboardScore(self, score) -> None:
+        """ Sets the leaderboard score for the test. """
+        self.getTest().__dict__['__leaderboard_score__'] = score
