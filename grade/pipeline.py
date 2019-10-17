@@ -4,6 +4,7 @@ from functools import partial
 from subprocess import run, PIPE, CompletedProcess
 from os import path
 from typing import Union, List
+import logging
 
 
 class Pipeline:
@@ -44,9 +45,9 @@ class PartialCredit:
         for pipeline in self.pipelines:
             try:
                 pipeline()
-            except AssertionError as e:
+            except Exception as e:
                 # TODO: Figure out how to raise this properly in caller.
-                print(e)
+                logging.exception(e, exc_info=False)
             else:
                 self._score += self.value / len(self.pipelines)
         return self
@@ -87,9 +88,9 @@ class AssertStdoutMatches:
             with open(stdout[0] + '.stdout', 'r') as f:
                 stdout = f.read()
 
-        if results.stdout != stdout:
+        if results.stdout.strip() != stdout.strip():
             raise AssertionError(
-                f'{results.args} stdout does not match expected.')
+                f'{results.args} stdout does not match expected. {results.stdout}')
 
 
 class AssertStderrMatches:
@@ -104,7 +105,7 @@ class AssertStderrMatches:
             with open(stderr[0] + '.stderr', 'r') as f:
                 stderr = f.read()
 
-        if results.stderr != stderr:
+        if results.stderr.strip() != stderr.strip():
             raise AssertionError(
                 f'{results.args} stderr does not match expected.')
 
@@ -153,14 +154,13 @@ class WriteStderr:
             raise FileExistsError
 
         with open(self.filepath, 'w') as f:
-            f.write(results.stdout)
+            f.write(results.stderr)
 
         return results
 
 
 class WriteOutputs:
     def __call__(self, results, testcase):
-        WriteStdout(results, testcase + '.stdout', True)
-        WriteStderr(results, testcase + '.stderr', True)
+        WriteStdout(testcase + '.stdout', True)(results)
+        WriteStderr(testcase + '.stderr', True)(results)
         return results
-

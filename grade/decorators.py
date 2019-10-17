@@ -3,6 +3,8 @@
 https://github.com/gradescope/gradescope-utils/blob/master/gradescope_utils/autograder_utils/decorators.py
 """
 
+from functools import wraps
+
 class weight:
     """ Simple decorator to add a __weight__ property to a function
     
@@ -64,8 +66,9 @@ class leaderboard:
         self.order = order
 
     def __call__(self, func):
-        func.__leaderboard_title__ = self.name if name else func.__name__
+        func.__leaderboard_title__ = self.name if self.name else func.__name__
         func.__leaderboard_order__ = self.order
+        func.__leaderboard_score__ = None
 
         def set_leaderboard_score(x):
             wrapper.__leaderboard_score__ = x
