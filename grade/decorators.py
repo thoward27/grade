@@ -3,10 +3,9 @@
 https://github.com/gradescope/gradescope-utils/blob/master/gradescope_utils/autograder_utils/decorators.py
 """
 
-from gradescope_utils.autograder_utils.decorators import weight, visibility
-
-class weight(object):
-    """Simple decorator to add a __weight__ property to a function
+class weight:
+    """ Simple decorator to add a __weight__ property to a function
+    
     Usage: @weight(3.0)
     """
     def __init__(self, val):
@@ -17,9 +16,11 @@ class weight(object):
         return func
 
 
-class visibility(object):
-    """Simple decorator to add a __visibility__ property to a function
+class visibility:
+    """ Simple decorator to add a __visibility__ property to a function
+    
     Usage: @visibility("hidden")
+    
     Options for the visibility field are as follows:
     - `hidden`: test case will never be shown to students
     - `after_due_date`: test case will be shown after the assignment's due date has passed
@@ -35,33 +36,43 @@ class visibility(object):
         return func
 
 
-class leaderboard(object):
-    """Decorator that indicates that a test corresponds to a leaderboard column
-    Usage: @leaderboard("high_score"). The string parameter indicates
-    the name of the column on the leaderboard
+class leaderboard:
+    """ Decorator that indicates that a test corresponds to a leaderboard column
+    
+    Usage: @leaderboard(column title, ordering)
+    By default, column title and ordering are 
+    function.__name__ and 'desc' respectively.
+
+    You may pass in any column title you'd like, however
+    ordering must be either 'asc' or 'desc'
+    
     Then, within the test, set the value by calling
     kwargs['set_leaderboard_value'] with a value. You can make this convenient by
     explicitly declaring a set_leaderboard_value keyword argument, eg.
+
     ```
-    def test_highscore(set_leaderboard_value=None):
-        set_leaderboard_value(42)
+    def test_highscore(set_leaderboard_score=None):
+        set_leaderboard_score(42)
     ```
+
+    You can also use the ScoringMixin, 
+    which provides a setter for leaderboardScore.
     """
 
-    def __init__(self, column_name, sort_order='desc'):
-        self.column_name = column_name
-        self.sort_order = sort_order
+    def __init__(self, name = None, order='desc'):
+        self.name = name
+        self.order = order
 
     def __call__(self, func):
-        func.__leaderboard_column__ = self.column_name
-        func.__leaderboard_sort_order__ = self.sort_order
+        func.__leaderboard_title__ = self.name if name else func.__name__
+        func.__leaderboard_order__ = self.order
 
-        def set_leaderboard_value(x):
-            wrapper.__leaderboard_value__ = x
+        def set_leaderboard_score(x):
+            wrapper.__leaderboard_score__ = x
 
         @wraps(func)
         def wrapper(*args, **kwargs):
-            kwargs['set_leaderboard_value'] = set_leaderboard_value
+            kwargs['set_leaderboard_score'] = set_leaderboard_score
             return func(*args, **kwargs)
 
         return wrapper
