@@ -1,12 +1,31 @@
 import json
 import sys
 import time
-from unittest import registerResult
+from typing import Optional, TextIO, Type
+from unittest import registerResult, TextTestRunner
 
-from grade.result import TestResult
+from grade.result import TestResult, JSONResult
 
 
-class JSON:
+class JSONRunner(TextTestRunner):
+    def __init__(self,
+                 stream: Optional[TextIO] = None,
+                 descriptions: bool = True,
+                 verbosity: int = 1,
+                 failfast: bool = False,
+                 buffer: bool = False,
+                 resultclass=JSONResult,
+                 warnings: Optional[Type[Warning]] = None,
+                 *,
+                 tb_locals: bool = False) -> None:
+        super().__init__(stream, descriptions, verbosity, failfast, buffer, resultclass, warnings, tb_locals=tb_locals)
+
+
+class MDRunner(TextTestRunner):
+    pass
+
+
+class _JSON:
     """A test runner class that displays results in JSON form.
     """
     resultclass = TestResult

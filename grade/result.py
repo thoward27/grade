@@ -1,5 +1,18 @@
+from typing import TextIO
 from unittest import result
+import unittest
+import json
 
+class JSONResult(unittest.TextTestResult):
+
+    def __init__(self, stream: TextIO, descriptions: bool, verbosity: int) -> None:
+        super().__init__(stream, descriptions, verbosity)
+        self.stream = stream
+        self.data = {}
+
+    def save(self, filename: str=None):
+        json.dump(self.data, filename if filename else self.stream)
+        return self
 
 class TestResult(result.TestResult):
 
