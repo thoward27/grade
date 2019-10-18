@@ -1,9 +1,10 @@
+import json
 import sys
 import time
-import json
-
 from unittest import registerResult
+
 from grade.result import TestResult
+
 
 class JSON:
     """A test runner class that displays results in JSON form.

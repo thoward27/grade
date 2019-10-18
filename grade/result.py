@@ -1,7 +1,8 @@
 from unittest import result
 
+
 class TestResult(result.TestResult):
-    
+
     def description(self, test):
         if line := test.shortDescription() is not None:
             return line
@@ -13,7 +14,7 @@ class TestResult(result.TestResult):
 
     def score(self, test):
         return getattr(getattr(test, test._testMethodName), '__score__', None)
-    
+
     def visibility(self, test):
         return getattr(getattr(test, test._testMethodName), '__visibility__', None)
 

@@ -1,10 +1,10 @@
 """ Pipeline. 
 """
-from functools import partial
-from subprocess import run, PIPE, CompletedProcess
-from os import path
-from typing import Union, List
 import logging
+from functools import partial
+from os import path
+from subprocess import run, PIPE, CompletedProcess
+from typing import List
 
 
 class Pipeline:
@@ -37,7 +37,7 @@ class PartialCredit:
 
     @property
     def score(self) -> float:
-        assert(self._executed)
+        assert (self._executed)
         return min(self.value, round(self._score, 2))
 
     def __call__(self):
@@ -84,7 +84,7 @@ class AssertStdoutMatches:
     def __call__(self, results: CompletedProcess, stdout: str = None) -> CompletedProcess:
         if stdout is None:
             stdout = filter(self.hasStdout, results.args)
-            assert(len(stdout) == 1)
+            assert (len(stdout) == 1)
             with open(stdout[0] + '.stdout', 'r') as f:
                 stdout = f.read()
 
@@ -101,7 +101,7 @@ class AssertStderrMatches:
     def __call__(self, results: CompletedProcess, stderr: str = None) -> CompletedProcess:
         if stderr is None:
             stderr = filter(self.hasStdout, results.args)
-            assert(len(stderr) == 1)
+            assert (len(stderr) == 1)
             with open(stderr[0] + '.stderr', 'r') as f:
                 stderr = f.read()
 

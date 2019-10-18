@@ -5,11 +5,13 @@ https://github.com/gradescope/gradescope-utils/blob/master/gradescope_utils/auto
 
 from functools import wraps
 
+
 class weight:
     """ Simple decorator to add a __weight__ property to a function
     
     Usage: @weight(3.0)
     """
+
     def __init__(self, val):
         self.val = val
 
@@ -61,7 +63,7 @@ class leaderboard:
     which provides a setter for leaderboardScore.
     """
 
-    def __init__(self, name = None, order='desc'):
+    def __init__(self, name=None, order='desc'):
         self.name = name
         self.order = order
 

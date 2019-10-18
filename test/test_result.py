@@ -3,8 +3,6 @@
 
 import unittest
 
-from grade.result import *
 
 class TestResult(unittest.TestCase):
     pass
-

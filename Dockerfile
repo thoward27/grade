@@ -31,12 +31,12 @@ RUN apt-get install -y \
 RUN curl https://pyenv.run | bash
 ENV PATH /root/.pyenv/shims:/root/.pyenv/bin:$PATH
 
+# Install python 3.8
 RUN pyenv install 3.8.0 && pyenv global 3.8.0 && pyenv rehash
 
-# Python 3.8 patch.
-# RUN add-apt-repository ppa:deadsnakes/ppa && apt-get update && apt-get install -y python3.8 python3.8-distutils
+# Install grade
+RUN python -m pip grade
 
-RUN python -m pip install gradescope-utils
-
+# Defaults
 ENTRYPOINT ["bash"]
 CMD ["python"]

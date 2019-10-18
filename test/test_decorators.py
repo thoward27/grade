@@ -5,6 +5,7 @@ import unittest
 
 from grade.decorators import *
 
+
 class TestDecorators(unittest.TestCase):
 
     def test_weight(self):
@@ -13,7 +14,7 @@ class TestDecorators(unittest.TestCase):
         @weight(10)
         def test_something():
             return
-        
+
         self.assertEqual(test_something.__weight__, 10)
         return
 
@@ -22,7 +23,7 @@ class TestDecorators(unittest.TestCase):
 
         def test_default():
             return
-        
+
         # There should be nothing set here.
         with self.assertRaises(AttributeError):
             test_default.__visibility__
@@ -30,7 +31,7 @@ class TestDecorators(unittest.TestCase):
         @visibility('hidden')
         def test_hidden():
             return
-        
+
         self.assertEqual(test_hidden.__visibility__, 'hidden')
 
         @visibility('after_due_date')
@@ -47,7 +48,6 @@ class TestDecorators(unittest.TestCase):
         return
 
     def test_leaderboard(self):
-
         @leaderboard()
         def test_defaults(set_leaderboard_score=None):
             return
@@ -70,7 +70,7 @@ class TestDecorators(unittest.TestCase):
         def test_title_and_order(set_leaderboard_score=None):
             set_leaderboard_score('A')
             return
-        
+
         test_title_and_order()
 
         self.assertEqual(test_title_and_order.__leaderboard_title__, 'title2')

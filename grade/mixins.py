@@ -2,15 +2,15 @@
 
 # TODO: Move leaderboard title and order to class attributes, not test.
 """
-from inspect import stack, getmembers, ismethod
+from inspect import stack
 from typing import List, Callable, Union
-from collections import namedtuple
+
 
 class ScoringMixin:
     """ Provides scoring utility functions.
     """
 
-    methods : List[tuple] = None
+    methods: List[tuple] = None
 
     def __str__(self) -> str:
         return type(self).__name__
@@ -19,16 +19,15 @@ class ScoringMixin:
         """ Returns a list of all test methods. """
         return [(key, getattr(self, key)) for key in dir(self) if key.startswith('test')]
 
-
     def getTest(self) -> Callable:
         """ Returns the topmost test method on the stack. """
         if not self.methods:
             self.methods = self.getTests()
-        
+
         caller = [frame for frame in stack() if frame.function.startswith('test')][0]
         caller = [func for name, func in self.methods if name == caller.function][0]
         return caller
-    
+
     def setattr(self, attribute, value) -> None:
         """ Sets attribute with value in the dictionary. """
         self.getTest().__dict__[attribute] = value
@@ -47,7 +46,7 @@ class ScoringMixin:
     def score(self) -> Union[int, float]:
         """ Returns the current score for the test. """
         return getattr(self.getTest(), '__score__', 0)
-    
+
     @score.setter
     def score(self, score: Union[int, float]) -> None:
         """ Sets the score for the test. """
