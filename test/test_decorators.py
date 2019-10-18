@@ -61,6 +61,8 @@ class TestDecorators(unittest.TestCase):
             set_leaderboard_score(10)
             return
 
+        test_title()
+
         self.assertEqual(test_title.__leaderboard_title__, 'title')
         self.assertEqual(test_title.__leaderboard_score__, 10)
 
@@ -68,6 +70,8 @@ class TestDecorators(unittest.TestCase):
         def test_title_and_order(set_leaderboard_score=None):
             set_leaderboard_score('A')
             return
+        
+        test_title_and_order()
 
         self.assertEqual(test_title_and_order.__leaderboard_title__, 'title2')
         self.assertEqual(test_title_and_order.__leaderboard_order__, 'asc')
