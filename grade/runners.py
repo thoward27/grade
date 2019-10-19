@@ -20,12 +20,12 @@ class GradedRunner(TextTestRunner):
                  descriptions: bool = True,
                  verbosity: int = 1,
                  failfast: bool = False,
-                 buffer: bool = False,
-                 resultclass=Result,
+                 buffer: bool = True,
                  warnings: Optional[Type[Warning]] = None,
                  *,
-                 tb_locals: bool = False) -> None:
-        super().__init__(stream, descriptions, verbosity, failfast, buffer, resultclass, warnings, tb_locals=tb_locals)
+                 tb_locals: bool = False,
+                 visibility: 'str' = 'visible') -> None:
+        super().__init__(stream, descriptions, verbosity, failfast, buffer, Result, warnings, tb_locals=tb_locals)
         self.stream = Stream()
     
     def run(self, test):
@@ -33,7 +33,3 @@ class GradedRunner(TextTestRunner):
         results = super().run(test)
         results.data['execution_time'] = round(time.time() - start)
         return results
-
-
-class MDRunner(TextTestRunner):
-    pass
