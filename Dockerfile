@@ -35,7 +35,7 @@ ENV PATH /root/.pyenv/shims:/root/.pyenv/bin:$PATH
 RUN pyenv install 3.8.0 && pyenv global 3.8.0 && pyenv rehash
 
 # Install grade
-RUN python -m pip grade
+RUN python -m pip install grade 
 
 # Defaults
 ENTRYPOINT ["bash"]
