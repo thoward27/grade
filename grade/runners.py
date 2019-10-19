@@ -3,9 +3,16 @@ import sys
 import time
 from typing import Optional, TextIO, Type
 from unittest import registerResult, TextTestRunner
+import io
+import time
 
 from grade.result import TestResult, JSONResult
 
+class Stream(io.StringIO):
+    def writeln(self, arg=None, /):
+        if arg:
+            self.write(arg)
+        self.write('\n')
 
 class JSONRunner(TextTestRunner):
     def __init__(self,
@@ -19,6 +26,13 @@ class JSONRunner(TextTestRunner):
                  *,
                  tb_locals: bool = False) -> None:
         super().__init__(stream, descriptions, verbosity, failfast, buffer, resultclass, warnings, tb_locals=tb_locals)
+        self.stream = Stream()
+    
+    def run(self, test):
+        start = time.time()
+        results = super().run(test)
+        results.data['execution_time'] = round(time.time() - start)
+        return results
 
 
 class MDRunner(TextTestRunner):
