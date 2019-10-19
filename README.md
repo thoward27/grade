@@ -10,8 +10,6 @@ Autograding is a challenge when the language doesn't support proper unit testing
 
 ### Decorators
 
-
-
 ### Executables
 
 ### Mixins
