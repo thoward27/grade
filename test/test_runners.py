@@ -77,9 +77,10 @@ class TestRunner(unittest.TestCase):
             self.weight = 10
             raise SyntaxError
 
-    def test_run(self):
+    def test_json(self):
         suite = unittest.TestLoader().loadTestsFromTestCase(self.Test)
         results = GradedRunner().run(suite)
+        self.maxDiff = None
         self.assertDictEqual(
             {
                 "tests": [
@@ -87,19 +88,19 @@ class TestRunner(unittest.TestCase):
                         "name": "test_error",
                         "max_score": 10,
                         "score": 0,
-                        "output": "Traceback (most recent call last):\n  File \"/mnt/c/Users/thowa/Github/grade/test/test_runners.py\", line 78, in test_error\n    raise SyntaxError\n  File \"<string>\", line None\nSyntaxError: <no detail available>\n"
+                        "output": "test_runners.py, line 78, in test_error; raise SyntaxError; File \"<string>\", line None; SyntaxError: <no detail available>;"
                     },
                     {
                         "name": "test_failure",
                         "max_score": 10,
                         "score": 0,
-                        "output": "Traceback (most recent call last):\n  File \"/mnt/c/Users/thowa/Github/grade/test/test_runners.py\", line 73, in test_failure\n    self.assertFalse(True)\nAssertionError: True is not false\n"
+                        "output": "test_runners.py, line 73, in test_failure; self.assertFalse(True); AssertionError: True is not false;"
                     },
                     {
                         "name": "test_failure_leaderboard: Testing something that fails.",
                         "max_score": 10,
                         "score": 0,
-                        "output": "Traceback (most recent call last):\n  File \"/mnt/c/Users/thowa/Github/grade/grade/decorators.py\", line 81, in wrapper\n    return func(*args, **kwargs)\n  File \"/mnt/c/Users/thowa/Github/grade/test/test_runners.py\", line 68, in test_failure_leaderboard\n    self.assertTrue(False)\nAssertionError: False is not true\n"
+                        "output": "test_runners.py, line 68, in test_failure_leaderboard; self.assertTrue(False); AssertionError: False is not true;"
                     },
                     {
                         "name": "test_full_credit: Testing one thing or another.",

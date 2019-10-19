@@ -45,7 +45,11 @@ class Result(unittest.TextTestResult):
         failures = [msg for func, msg in self.failures if func == test]
         errors = [msg for func, msg in self.errors if func == test]
         if failures or errors:
-            results['output'] = ''.join([*failures, *errors])
+            output = ''.join([*failures, *errors])
+            output = '; '.join([line.strip() for line in output.split('\n')[1:]])
+            # output = ';'.join([output.split(';')[0].split('/')[-1], *output.split(';')[1:]])
+            output = ''.join([output.split('.py')[-2].split('/')[-1] + '.py', output.split('.py\"')[-1]])
+            results['output'] = output.strip()
 
         if results['score'] is None:
             results['score'] = 0 if failures or errors else results['max_score']
