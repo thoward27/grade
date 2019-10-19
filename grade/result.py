@@ -45,7 +45,7 @@ class Result(unittest.TextTestResult):
         result = {
             'name': self.getattr(test, '__name__'),
             'max_score': self.getattr(test, '__weight__', 0),
-            'score': self.getattr(test, '__score__', None)
+            'score': self.getattr(test, '__score__', None),
         }
 
         # Add to name.
@@ -56,7 +56,7 @@ class Result(unittest.TextTestResult):
         failures = [msg for func, msg in self.failures if func == test]
         errors = [msg for func, msg in self.errors if func == test]
         if failures or errors:
-            results['output'] = self.parseExceptions(failures, errors)
+            result['output'] = self.parseExceptions(failures, errors)
 
         # Update score if needed.
         if result['score'] is None:
@@ -66,7 +66,7 @@ class Result(unittest.TextTestResult):
         self.data['tests'].append(result)
         
         # Update leaderboard, if needed.
-        if self.get(test, '__leaderboard_title__') is not None:
+        if self.getattr(test, '__leaderboard_title__') is not None:
             self.data['leaderboard'].append({
                 'name': self.getattr(test, '__leaderboard_title__'),
                 'value': self.getattr(test, '__leaderboard_score__'),

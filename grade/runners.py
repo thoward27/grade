@@ -26,10 +26,11 @@ class GradedRunner(TextTestRunner):
                  tb_locals: bool = False,
                  visibility: 'str' = 'visible') -> None:
         super().__init__(stream, descriptions, verbosity, failfast, buffer, Result, warnings, tb_locals=tb_locals)
-        self.stream = Stream()
+        self.visibility = visibility
     
     def run(self, test):
         start = time.time()
         results = super().run(test)
         results.data['execution_time'] = round(time.time() - start)
+        results.data['visibility'] = self.visibility
         return results
