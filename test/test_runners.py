@@ -4,9 +4,11 @@
 import unittest
 
 from grade.runners import *
+from grade.mixins import *
+from grade.decorators import *
 
 
-class TestJSON(unittest.TestCase):
+class TestRunner(unittest.TestCase):
 
     """
     Gradescope Example Output:
@@ -40,71 +42,91 @@ class TestJSON(unittest.TestCase):
     }
     """
 
-    class Test(unittest.TestCase):
+    class Test(ScoringMixin, unittest.TestCase):
 
-        def test_something(self):
+        @weight(10)
+        def test_full_credit(self):
             """ Testing one thing or another. """
+            self.leaderboardTitle = 'Successful'
+            self.leaderboardOrder = 'asc'
+            self.leaderboardScore = 10
+
             self.assertTrue(True)
             return
 
-        def test_successfully_something_else(self):
+        def test_partial_credit(self):
+            self.weight = 10
+            self.score = 5
             self.assertFalse(False)
             return
 
-        def test_failure(self):
+        @weight(10)
+        @leaderboard('fastest fail')
+        def test_failure_leaderboard(self, set_leaderboard_score=None):
             """ Testing something that fails. """
+            set_leaderboard_score(100)
             self.assertTrue(False)
             return
 
-        def test_failure2(self):
+        def test_failure(self):
+            self.weight = 10
             self.assertFalse(True)
             return
 
         def test_error(self):
+            self.weight = 10
             raise SyntaxError
 
     def test_run(self):
         suite = unittest.TestLoader().loadTestsFromTestCase(self.Test)
-        results = JSONRunner().run(suite)
-        print(json.dumps(results.data, indent=4))
+        results = GradedRunner().run(suite)
         self.assertDictEqual(
             {
-                'tests': [
+                "tests": [
                     {
-                      'name': 'test_something: Testing one thing or another',
-                      'score': 0,
-                      'max_score': 0
+                        "name": "test_error",
+                        "max_score": 10,
+                        "score": 0,
+                        "output": "Traceback (most recent call last):\n  File \"/mnt/c/Users/thowa/Github/grade/test/test_runners.py\", line 78, in test_error\n    raise SyntaxError\n  File \"<string>\", line None\nSyntaxError: <no detail available>\n"
                     },
                     {
-                        'name': 'test_successfully_something_else',
-                        'score': 0,
-                        'max_score': 0,
+                        "name": "test_failure",
+                        "max_score": 10,
+                        "score": 0,
+                        "output": "Traceback (most recent call last):\n  File \"/mnt/c/Users/thowa/Github/grade/test/test_runners.py\", line 73, in test_failure\n    self.assertFalse(True)\nAssertionError: True is not false\n"
                     },
                     {
-                        'name': 'test_failure',
-                        'score': 0,
-                        'max_score': 0,
-                        'output': 'FAILURE'
+                        "name": "test_failure_leaderboard: Testing something that fails.",
+                        "max_score": 10,
+                        "score": 0,
+                        "output": "Traceback (most recent call last):\n  File \"/mnt/c/Users/thowa/Github/grade/grade/decorators.py\", line 81, in wrapper\n    return func(*args, **kwargs)\n  File \"/mnt/c/Users/thowa/Github/grade/test/test_runners.py\", line 68, in test_failure_leaderboard\n    self.assertTrue(False)\nAssertionError: False is not true\n"
+                    },
+                    {
+                        "name": "test_full_credit: Testing one thing or another.",
+                        "max_score": 10,
+                        "score": 10
+                    },
+                    {
+                        "name": "test_partial_credit",
+                        "max_score": 10,
+                        "score": 5
                     }
                 ],
-                'visibility': 'visible',
-                'execution_time': results.data['execution_time'],
-                'score': 0,
+                "leaderboard": [
+                    {
+                        "name": "fastest fail",
+                        "value": 100,
+                        "order": "desc"
+                    },
+                    {
+                        "name": "Successful",
+                        "value": 10,
+                        "order": "asc"
+                    }
+                ],
+                "visibility": "visible",
+                "execution_time": 0
             },
-            results.data
+            results.json
         )
-        return
-
-
-class TestMD(unittest.TestCase):
-
-    class Test(unittest.TestCase):
-        def test_something(self):
-            self.assertTrue(True)
-            return
-
-    @unittest.skip
-    def test_output(self):
-        suite = unittest.TestLoader().loadTestsFromTestCase(self.Test)
-        results = unittest.TextTestRunner().run(suite)
         return
