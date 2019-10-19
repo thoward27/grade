@@ -125,7 +125,7 @@ class TestRunner(unittest.TestCase):
                     }
                 ],
                 "visibility": "visible",
-                "execution_time": 0
+                "execution_time": results.json['execution_time'] # Since this varies!
             },
             results.json
         )
