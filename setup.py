@@ -5,7 +5,7 @@ with open('README.md', 'r') as f:
 
 setup(
     name='grade',
-    version='0.5',
+    version='0.5.1',
     packages=['grade'],
     url='https://github.com/thoward27/grade',
     license='AGPL',
