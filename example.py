@@ -3,7 +3,7 @@ sys.setrecursionlimit(500)
 
 import os
 import unittest
-from grade import pipeline, mixins, decorators
+from grade import pipeline, mixins, decorators, runners
 from grade.pipeline import Pipeline, Run, AssertExitSuccess, PartialCredit, AssertValgrindSuccess
 
 
@@ -121,15 +121,18 @@ class Tests(mixins.ScoringMixin, unittest.TestCase):
         # We can also award partial credit
         results = PartialCredit(map(pipeline, testcases), 10)()
         self.score = results.score
+        print("Catching output?")
         return
+
+    # Output is also captured 
+    def test_failure(self):
+        print("False is not True!")
+        self.assertTrue(False)
 
 
 if __name__ == '__main__':
     import unittest
+    import sys
     
     suite = unittest.TestLoader().discover('./', pattern='example.py')
-    unittest.TextTestRunner(
-        stream=sys.stdout,
-        descriptions=True,
-        verbosity=1
-    ).run(suite)
+    print(runners.GradedRunner().run(suite).json)
