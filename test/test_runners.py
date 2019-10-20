@@ -69,6 +69,7 @@ class TestRunner(unittest.TestCase):
             return
 
         def test_failure(self):
+            print("Some output.")
             self.weight = 10
             self.assertFalse(True)
             return
@@ -88,19 +89,19 @@ class TestRunner(unittest.TestCase):
                         "name": "test_error",
                         "max_score": 10,
                         "score": 0,
-                        "output": "test_runners.py, line 78, in test_error; raise SyntaxError; File \"<string>\", line None; SyntaxError: <no detail available>;"
+                        "output": "test_runners.py, line 79, in test_error; raise SyntaxError; File \"<string>\", line None; SyntaxError: <no detail available>"
                     },
                     {
                         "name": "test_failure",
                         "max_score": 10,
                         "score": 0,
-                        "output": "test_runners.py, line 73, in test_failure; self.assertFalse(True); AssertionError: True is not false;"
+                        "output": "test_runners.py, line 74, in test_failure; self.assertFalse(True); AssertionError: True is not false; Stdout:; Some output."
                     },
                     {
                         "name": "test_failure_leaderboard: Testing something that fails.",
                         "max_score": 10,
                         "score": 0,
-                        "output": "test_runners.py, line 68, in test_failure_leaderboard; self.assertTrue(False); AssertionError: False is not true;"
+                        "output": "test_runners.py, line 68, in test_failure_leaderboard; self.assertTrue(False); AssertionError: False is not true"
                     },
                     {
                         "name": "test_full_credit: Testing one thing or another.",
@@ -126,8 +127,8 @@ class TestRunner(unittest.TestCase):
                     }
                 ],
                 "visibility": "visible",
-                "execution_time": results.json['execution_time'] # Since this varies!
+                "execution_time": results.data['execution_time'] # Since this varies!
             },
-            results.json
+            json.loads(results.json)
         )
         return
