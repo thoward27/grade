@@ -43,7 +43,7 @@ class Result(unittest.TextTestResult):
         return [m for f, m in [*self.failures, *self.errors] if f == test]
 
     def getName(self, test):
-        name = self.getattr(test, '__name__')
+        name = self.getattr(test, '__qualname__')
         if description := test.shortDescription():
             name = f'{name}: {description}'
         return name

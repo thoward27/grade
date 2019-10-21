@@ -86,30 +86,30 @@ class TestRunner(unittest.TestCase):
             {
                 "tests": [
                     {
-                        "name": "test_error",
+                        "name": "TestRunner.Test.test_error",
                         "max_score": 10,
                         "score": 0,
                         "output": "test_runners.py, line 79, in test_error; raise SyntaxError; File \"<string>\", line None; SyntaxError: <no detail available>"
                     },
                     {
-                        "name": "test_failure",
+                        "name": "TestRunner.Test.test_failure",
                         "max_score": 10,
                         "score": 0,
                         "output": "test_runners.py, line 74, in test_failure; self.assertFalse(True); AssertionError: True is not false; Stdout:; Some output."
                     },
                     {
-                        "name": "test_failure_leaderboard: Testing something that fails.",
+                        "name": "TestRunner.Test.test_failure_leaderboard: Testing something that fails.",
                         "max_score": 10,
                         "score": 0,
                         "output": "test_runners.py, line 68, in test_failure_leaderboard; self.assertTrue(False); AssertionError: False is not true"
                     },
                     {
-                        "name": "test_full_credit: Testing one thing or another.",
+                        "name": "TestRunner.Test.test_full_credit: Testing one thing or another.",
                         "max_score": 10,
                         "score": 10
                     },
                     {
-                        "name": "test_partial_credit",
+                        "name": "TestRunner.Test.test_partial_credit",
                         "max_score": 10,
                         "score": 5
                     }
