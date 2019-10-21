@@ -80,15 +80,18 @@ class AssertStdoutMatches:
     @staticmethod
     def hasStdout(filepath):
         return path.exists(filepath) and path.exists(filepath + '.stdout')
+    
+    def __init__(self, stdout: str = None):
+        self.stdout = stdout
 
-    def __call__(self, results: CompletedProcess, stdout: str = None) -> CompletedProcess:
-        if stdout is None:
-            stdout = filter(self.hasStdout, results.args)
-            assert (len(stdout) == 1)
-            with open(stdout[0] + '.stdout', 'r') as f:
+    def __call__(self, results: CompletedProcess) -> CompletedProcess:
+        if self.stdout is None:
+            self.stdout = filter(self.hasStdout, results.args)
+            assert (len(self.stdout) == 1)
+            with open(self.stdout[0] + '.stdout', 'r') as f:
                 stdout = f.read()
 
-        if results.stdout.strip() != stdout.strip():
+        if results.stdout.strip() != self.stdout.strip():
             raise AssertionError(
                 f'{results.args} stdout does not match expected. {results.stdout}')
 
@@ -110,14 +113,17 @@ class AssertStderrMatches:
     def hasStdout(filepath):
         return path.exists(filepath) and path.exists(filepath + '.stderr')
 
-    def __call__(self, results: CompletedProcess, stderr: str = None) -> CompletedProcess:
-        if stderr is None:
-            stderr = filter(self.hasStdout, results.args)
-            assert (len(stderr) == 1)
-            with open(stderr[0] + '.stderr', 'r') as f:
+    def __init__(self, stderr: str = None):
+        self.stderr = stderr
+
+    def __call__(self, results: CompletedProcess) -> CompletedProcess:
+        if self.stderr is None:
+            self.stderr = filter(self.hasStdout, results.args)
+            assert (len(self.stderr) == 1)
+            with open(self.stderr[0] + '.stderr', 'r') as f:
                 stderr = f.read()
 
-        if results.stderr.strip() != stderr.strip():
+        if results.stderr.strip() != self.stderr.strip():
             raise AssertionError(
                 f'{results.args} stderr does not match expected.')
         
@@ -138,8 +144,7 @@ class Run:
         self.command = command
         self.kwargs = kwargs
 
-    def __call__(self, results: CompletedProcess = None, **kwargs) -> CompletedProcess:
-        self.kwargs.update(kwargs)
+    def __call__(self, results: CompletedProcess = None) -> CompletedProcess:
         return self.run(self.command, **self.kwargs)
 
 

@@ -77,12 +77,14 @@ class TestAsserts(unittest.TestCase):
 
     def test_stdout_matches(self):
         results = Run(['echo', 'hello world'])()
-        AssertStdoutMatches()(results, 'hello world')
+        results = AssertStdoutMatches('hello world')(results)
+        self.assertIsInstance(results, CompletedProcess)
         return
 
     def test_stderr_matches(self):
         results = Run('>&2 echo hello world', shell=True)()
-        AssertStderrMatches()(results, 'hello world')
+        results = AssertStderrMatches('hello world')(results)
+        self.assertIsInstance(results, CompletedProcess)
         return
 
 
@@ -157,5 +159,16 @@ class TestLambda(unittest.TestCase):
         """ Lambda that does return completedprocess. """
         results = Run(['ls'])()
         results = Lambda(lambda results: results)(results)
+        self.assertIsInstance(results, CompletedProcess)
+        return
+
+    def randomFunction(self, results):
+        """ Function for the test below. """
+        return results
+
+    def test_passing_function(self):
+        """ Lambda that executes a function. """
+        results = Run(['ls'])()
+        results = Lambda(self.randomFunction)(results)
         self.assertIsInstance(results, CompletedProcess)
         return
