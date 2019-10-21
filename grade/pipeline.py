@@ -85,11 +85,15 @@ class AssertStdoutMatches:
         self.stdout = stdout
 
     def __call__(self, results: CompletedProcess) -> CompletedProcess:
-        if self.stdout is None:
-            self.stdout = filter(self.hasStdout, results.args)
+        if self.stdout is not None:
+            pass
+        elif type(results.args) is list:
+            self.stdout = list(filter(lambda f: path.exists(f + '.stdout'), results.args))
             assert (len(self.stdout) == 1)
             with open(self.stdout[0] + '.stdout', 'r') as f:
-                stdout = f.read()
+                self.stdout = f.read()
+        else:
+            raise ValueError(f"Cannot infer stdout file for {results.args}")
 
         if results.stdout.strip() != self.stdout.strip():
             raise AssertionError(
@@ -97,16 +101,6 @@ class AssertStdoutMatches:
 
         return results
 
-
-class Lambda:
-    def __init__(self, function: Callable[[CompletedProcess], bool]):
-        self.function = function
-    
-    def __call__(self, results: CompletedProcess) -> CompletedProcess:
-        results = self.function(results)
-        if type(results) is not CompletedProcess:
-            raise TypeError('Lambda did not return CompletedProcess.')
-        return results
 
 class AssertStderrMatches:
     @staticmethod
@@ -117,11 +111,17 @@ class AssertStderrMatches:
         self.stderr = stderr
 
     def __call__(self, results: CompletedProcess) -> CompletedProcess:
-        if self.stderr is None:
-            self.stderr = filter(self.hasStdout, results.args)
+        if self.stderr is not None:
+            pass
+        
+        elif type(results.args) is list:
+            self.stderr = list(filter(lambda f: path.exists(f + '.stderr'), results.args))
             assert (len(self.stderr) == 1)
             with open(self.stderr[0] + '.stderr', 'r') as f:
-                stderr = f.read()
+                self.stderr = f.read()
+        
+        else:
+            raise ValueError(f"Cannot infer stderr file of {results.args}")
 
         if results.stderr.strip() != self.stderr.strip():
             raise AssertionError(
@@ -146,6 +146,17 @@ class Run:
 
     def __call__(self, results: CompletedProcess = None) -> CompletedProcess:
         return self.run(self.command, **self.kwargs)
+
+
+class Lambda:
+    def __init__(self, function: Callable[[CompletedProcess], bool]):
+        self.function = function
+    
+    def __call__(self, results: CompletedProcess) -> CompletedProcess:
+        results = self.function(results)
+        if type(results) is not CompletedProcess:
+            raise TypeError('Lambda did not return CompletedProcess.')
+        return results
 
 
 class WriteStdout:

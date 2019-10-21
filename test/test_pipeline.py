@@ -76,15 +76,33 @@ class TestAsserts(unittest.TestCase):
         return
 
     def test_stdout_matches(self):
-        results = Run(['echo', 'hello world'])()
-        results = AssertStdoutMatches('hello world')(results)
+        # Specifying stdout.
+        results = Run(['echo', 'hello_world'])()
+        results = AssertStdoutMatches('hello_world')(results)
         self.assertIsInstance(results, CompletedProcess)
+        
+        # Inferring stdout.
+        results = WriteStdout('hello_world.stdout')(results)
+        results = AssertStdoutMatches()(results)
+        self.assertIsInstance(results, CompletedProcess)
+        os.remove('hello_world.stdout')
+        
+        # Cannot infer file of shell=True commands.
+        with self.assertRaises(ValueError):
+            AssertStdoutMatches()(Run('echo hello world', shell=True)())
         return
 
     def test_stderr_matches(self):
-        results = Run('>&2 echo hello world', shell=True)()
-        results = AssertStderrMatches('hello world')(results)
+        results = Run('>&2 echo hello_world', shell=True)()
+        results = AssertStderrMatches('hello_world')(results)
         self.assertIsInstance(results, CompletedProcess)
+
+        results = WriteStderr('hello_world.stderr')(results)
+        with self.assertRaises(ValueError):
+            results = AssertStderrMatches()(results)
+        self.assertIsInstance(results, CompletedProcess)
+        
+        os.remove('hello_world.stderr')
         return
 
 
