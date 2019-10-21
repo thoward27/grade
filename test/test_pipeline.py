@@ -73,6 +73,9 @@ class TestAsserts(unittest.TestCase):
     def test_valgrind(self):
         results = Run(['ls'])()
         AssertValgrindSuccess()(results)
+
+        results = Run('echo hello', shell=True)()
+        AssertValgrindSuccess()(results)
         return
 
     def test_stdout_matches(self):

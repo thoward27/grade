@@ -71,7 +71,7 @@ class AssertExitFailure:
 class AssertValgrindSuccess:
     def __call__(self, results: CompletedProcess) -> CompletedProcess:
         # TODO: add --exit-on-first-error=yes when valgrind --version>=3.14
-        results = Run(['valgrind', '-q', '--error-exitcode=1', *results.args])()
+        results = Run(['valgrind', '-q', '--error-exitcode=1', *(results.args if type(results.args) is list else results.args.split(' '))])()
         results = AssertExitSuccess()(results)
         return results
 
