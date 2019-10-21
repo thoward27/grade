@@ -1,10 +1,26 @@
 # Grade: Get Readymade Autograding Done Efficiently
 
-A utility for programming assignment grading.
+A utility for programming assignment autograding.
 
 ## Motivation
 
-Autograding is a challenge when the language doesn't support proper unit testing, or when you need to test binary files, grade solves these problems.
+Grade attempts alleviate typical problems in autograding workflows.
+By providing easy-to-use wrappers to work directly with executable files, Grade can test almost anything.
+Combining that with the `ScoringMixin` and the `GradedRunner`, allows you to output your scores for Gradescope or an in-house Markdown report.
+
+## Setup
+
+### Pip
+
+```python
+python -m pip install grade
+```
+
+### Docker
+
+```docker
+FROM thoward27/grade:latest
+```
 
 ## Quickstart
 
