@@ -4,7 +4,7 @@ import logging
 from functools import partial
 from os import path
 from subprocess import run, PIPE, CompletedProcess
-from typing import List
+from typing import List, Callable
 
 
 class Pipeline:
@@ -92,6 +92,18 @@ class AssertStdoutMatches:
             raise AssertionError(
                 f'{results.args} stdout does not match expected. {results.stdout}')
 
+        return results
+
+
+class Lambda:
+    def __init__(self, function: Callable[[CompletedProcess], bool]):
+        self.function = function
+    
+    def __call__(self, results: CompletedProcess) -> CompletedProcess:
+        results = self.function(results)
+        if type(results) is not CompletedProcess:
+            raise TypeError('Lambda did not return CompletedProcess.')
+        return results
 
 class AssertStderrMatches:
     @staticmethod
@@ -108,6 +120,8 @@ class AssertStderrMatches:
         if results.stderr.strip() != stderr.strip():
             raise AssertionError(
                 f'{results.args} stderr does not match expected.')
+        
+        return results
 
 
 class Run:

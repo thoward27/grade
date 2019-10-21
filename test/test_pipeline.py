@@ -115,7 +115,8 @@ class TestWrite(unittest.TestCase):
 
     def test_stdout(self):
         results = Run(['echo', 'hello'])()
-        WriteStdout()(results)
+        results = WriteStdout()(results)
+        self.assertIsInstance(results, CompletedProcess)
         with open('temp', 'r') as f:
             self.assertEqual(results.stdout, f.read())
         os.remove('temp')
@@ -123,7 +124,8 @@ class TestWrite(unittest.TestCase):
 
     def test_stderr(self):
         results = Run('>&2 echo error', shell=True)()
-        WriteStderr()(results)
+        results = WriteStderr()(results)
+        self.assertIsInstance(results, CompletedProcess)
         with open('temp', 'r') as f:
             self.assertEqual(results.stderr, f.read())
         os.remove('temp')
@@ -140,4 +142,20 @@ class TestWrite(unittest.TestCase):
         with open('temp.stderr', 'r') as f:
             self.assertEqual(results.stderr, f.read())
         os.remove('temp.stderr')
+        return
+
+class TestLambda(unittest.TestCase):
+
+    def test_improper_return(self):
+        """ Lambda must return results. """
+        results = Run(['ls'])()
+        with self.assertRaises(TypeError):
+            results = Lambda(lambda results: True)(results)
+        return
+
+    def test_proper_return(self):
+        """ Lambda that does return completedprocess. """
+        results = Run(['ls'])()
+        results = Lambda(lambda results: results)(results)
+        self.assertIsInstance(results, CompletedProcess)
         return
