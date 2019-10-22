@@ -7,6 +7,10 @@ from grade.mixins import *
 
 class TestScoringMixin(ScoringMixin, unittest.TestCase):
 
+    def test_requires(self):
+        with self.assertRaises(AssertionError):
+            self.require('iDoNotExist')
+
     def test_getTest(self):
         self.assertEqual(self.getTest().__name__, 'test_getTest')
         self.assertEqual(

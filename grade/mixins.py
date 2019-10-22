@@ -2,6 +2,7 @@
 
 # TODO: Move leaderboard title and order to class attributes, not test.
 """
+import os
 from inspect import stack
 from typing import List, Callable, Union
 
@@ -31,6 +32,10 @@ class ScoringMixin:
     def setattr(self, attribute, value) -> None:
         """ Sets attribute with value in the dictionary. """
         self.getTest().__dict__[attribute] = value
+
+    def require(self, *files) -> None:
+        """ Asserts all provided files exist. """
+        [self.assertTrue(os.path.exists(f), f'{f} does not exist!') for f in files]
 
     @property
     def weight(self) -> int:
