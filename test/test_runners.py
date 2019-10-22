@@ -147,6 +147,7 @@ class TestRunner(unittest.TestCase):
     def test_json_failing(self):
         suite = unittest.TestLoader().loadTestsFromTestCase(self.TestFailing)
         results = GradedRunner().run(suite)
+        self.maxDiff = None
         self.assertDictEqual(
             {
                 'tests': [
@@ -154,7 +155,7 @@ class TestRunner(unittest.TestCase):
                         'name': 'TestRunner.TestFailing.test_something',
                         'max_score': 10,
                         'score': 0,
-                        'output': "mixins.py, line 38, in <listcomp>; [self.assertTrue(os.path.exists(f), f'{f} does not exist!') for f in files]; AssertionError: False is not true : thingsthatshallnotbe does not exist!"
+                        'output': "mixins.py, line 34, in <listcomp>; [self.assertTrue(os.path.exists(f), f'{f} does not exist!') for f in files]; AssertionError: False is not true : thingsthatshallnotbe does not exist!"
                     }
                 ],
                 'leaderboard': [],

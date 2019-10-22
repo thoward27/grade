@@ -18,10 +18,6 @@ class TestScoringMixin(ScoringMixin, unittest.TestCase):
             'TestScoringMixin.test_getTest'
         )
 
-    def test_getTests(self):
-        methods = self.getTests()
-        self.assertTrue(all([name.startswith('test') for name, _ in methods]))
-
     def test_score(self):
         """ Can we modify and recall a tests score? """
 
