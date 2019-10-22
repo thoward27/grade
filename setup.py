@@ -5,7 +5,7 @@ with open('README.md', 'r') as f:
 
 setup(
     name='grade',
-    version='0.5.1',
+    version='0.6.2',
     packages=['grade'],
     url='https://github.com/thoward27/grade',
     license='AGPL',
@@ -13,5 +13,6 @@ setup(
     author_email='info@tomhoward.codes',
     description='An package for easy autograding.',
     long_description=long_description,
+    long_description_content_type='text/markdown',
     python_requires='>=3.8',
 )
