@@ -93,6 +93,13 @@ class TestAsserts(unittest.TestCase):
         # Cannot infer file of shell=True commands.
         with self.assertRaises(ValueError):
             AssertStdoutMatches()(Run('echo hello world', shell=True)())
+
+        results = Pipeline(
+            Run(['echo', 'hello world']),
+            WriteStdout('temp'),
+        )()
+        AssertStdoutMatches(filepath='temp')(results)
+        os.remove('temp')
         return
 
     def test_stderr_matches(self):
@@ -104,6 +111,8 @@ class TestAsserts(unittest.TestCase):
         with self.assertRaises(ValueError):
             results = AssertStderrMatches()(results)
         self.assertIsInstance(results, CompletedProcess)
+
+        AssertStderrMatches(filepath='hello_world.stderr')(results)
         
         os.remove('hello_world.stderr')
         return

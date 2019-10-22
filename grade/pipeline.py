@@ -77,12 +77,16 @@ class AssertValgrindSuccess:
 
 
 class AssertStdoutMatches:
-    @staticmethod
-    def hasStdout(filepath):
-        return path.exists(filepath) and path.exists(filepath + '.stdout')
     
-    def __init__(self, stdout: str = None):
-        self.stdout = stdout
+    def __init__(self, stdout: str = None, filepath: str = None):
+        if stdout and filepath:
+            raise ValueError("Can only pass one of stdout or filepath.")
+        elif filepath:
+            with open(filepath, 'r') as f:
+                self.stdout = f.read()
+        else:
+            self.stdout = stdout
+        
 
     def __call__(self, results: CompletedProcess) -> CompletedProcess:
         if self.stdout is not None:
@@ -103,12 +107,15 @@ class AssertStdoutMatches:
 
 
 class AssertStderrMatches:
-    @staticmethod
-    def hasStdout(filepath):
-        return path.exists(filepath) and path.exists(filepath + '.stderr')
 
-    def __init__(self, stderr: str = None):
-        self.stderr = stderr
+    def __init__(self, stderr: str = None, filepath: str = None):
+        if stderr and filepath:
+            raise ValueError("Can only pass one of stderr and filepath.")
+        elif filepath:
+            with open(filepath, 'r') as f:
+                self.stderr = f.read()
+        else:
+            self.stderr = stderr
 
     def __call__(self, results: CompletedProcess) -> CompletedProcess:
         if self.stderr is not None:
