@@ -54,10 +54,9 @@ class leaderboard:
     kwargs['set_leaderboard_value'] with a value. You can make this convenient by
     explicitly declaring a set_leaderboard_value keyword argument, eg.
 
-    ```
-    def test_highscore(set_leaderboard_score=None):
-        set_leaderboard_score(42)
-    ```
+    .. codeblock:: python
+        def test_highscore(set_leaderboard_score=None):
+            set_leaderboard_score(42)
 
     You can also use the ScoringMixin, 
     which provides a setter for leaderboardScore.
