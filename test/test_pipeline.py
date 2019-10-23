@@ -144,6 +144,15 @@ class TestRun(unittest.TestCase):
             Run(['sleep', '30'], timeout=1)()
         return
 
+    def test_input(self):
+        Pipeline(
+            Run(['cat', 'README.md']),
+            AssertExitSuccess(),
+            Run(['grep', 'pip'], input=lambda r: r.stdout),
+            AssertStdoutMatches('python -m pip install grade')
+        )()
+        results = Run(['grep', 'hello', '-'], input="hello world\nhear me test things!")()
+
 
 class TestWrite(unittest.TestCase):
     """ Testing commands that write output. """

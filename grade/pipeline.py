@@ -150,12 +150,16 @@ class Run:
         errors='ignore'
     )
 
-    def __init__(self, command, **kwargs):
+    def __init__(self, command, input=None, **kwargs):
         self.command = command
+        self.input = input
         self.kwargs = kwargs
 
     def __call__(self, results: CompletedProcess = None) -> CompletedProcess:
-        return self.run(self.command, **self.kwargs)
+        if callable(self.input):
+            self.input = self.input(results)
+        
+        return self.run(self.command, input=self.input, **self.kwargs)
 
 
 class Lambda:
