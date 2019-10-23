@@ -8,7 +8,7 @@ import logging
 from functools import partial
 from os import path
 from subprocess import run, PIPE, CompletedProcess
-from typing import List, Callable
+from typing import Callable, Iterator
 
 Callback = Callable[[CompletedProcess], CompletedProcess]
 
@@ -57,7 +57,7 @@ class PartialCredit:
     # TODO: Provide a weighting mechanism.
     """
 
-    def __init__(self, pipelines: List[Pipeline], value: int):
+    def __init__(self, pipelines: Iterator[Pipeline], value: int):
         self.pipelines = list(pipelines)
         self.value = value
         self._score = 0
@@ -66,7 +66,7 @@ class PartialCredit:
     @property
     def score(self) -> float:
         """ Returns the aggregate score, raises exception if not run. """
-        assert (self._executed)
+        assert self._executed
         return min(self.value, round(self._score, 2))
 
     def __call__(self):
@@ -241,7 +241,7 @@ class Run:
 class Lambda:
     """ Execute arbitrary code in a Pipeline. """
 
-    def __init__(self, function: Callable[[CompletedProcess], bool]):
+    def __init__(self, function: Callback):
         self.function = function
 
     def __call__(self, results: CompletedProcess) -> CompletedProcess:

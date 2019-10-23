@@ -1,15 +1,15 @@
 """ Tests for the runners module.
 """
 
+import json
 import unittest
 
-from grade.runners import *
-from grade.mixins import *
 from grade.decorators import *
+from grade.mixins import *
+from grade.runners import *
 
 
 class TestRunner(unittest.TestCase):
-
     """
     Gradescope Example Output:
     { 
@@ -89,19 +89,22 @@ class TestRunner(unittest.TestCase):
                         "name": "TestRunner.TestPassing.test_error",
                         "max_score": 10,
                         "score": 0,
-                        "output": "test_runners.py, line 79, in test_error; raise SyntaxError; File \"<string>\", line None; SyntaxError: <no detail available>"
+                        "output": "test_runners.py, line 79, in test_error; raise SyntaxError; File \"<string>\", line None; "
+                                  "SyntaxError: <no detail available> "
                     },
                     {
                         "name": "TestRunner.TestPassing.test_failure",
                         "max_score": 10,
                         "score": 0,
-                        "output": "test_runners.py, line 74, in test_failure; self.assertFalse(True); AssertionError: True is not false; Stdout:; Some output."
+                        "output": "test_runners.py, line 74, in test_failure; self.assertFalse(True); AssertionError: True is "
+                                  "not false; Stdout:; Some output. "
                     },
                     {
                         "name": "TestRunner.TestPassing.test_failure_leaderboard: Testing something that fails.",
                         "max_score": 10,
                         "score": 0,
-                        "output": "test_runners.py, line 68, in test_failure_leaderboard; self.assertTrue(False); AssertionError: False is not true"
+                        "output": "test_runners.py, line 68, in test_failure_leaderboard; self.assertTrue(False); "
+                                  "AssertionError: False is not true "
                     },
                     {
                         "name": "TestRunner.TestPassing.test_full_credit: Testing one thing or another.",
@@ -127,19 +130,18 @@ class TestRunner(unittest.TestCase):
                     }
                 ],
                 "visibility": "visible",
-                "execution_time": results.data['execution_time'] # Since this varies!
+                "execution_time": results.data['execution_time']  # Since this varies!
             },
             json.loads(results.json)
         )
         return
 
-    
     class TestFailing(ScoringMixin, unittest.TestCase):
 
         def setUp(self):
             self.require('thingsthatshallnotbe')
             return super().setUp()
-        
+
         @weight(10)
         def test_something(self):
             self.assertTrue(True)
@@ -155,12 +157,14 @@ class TestRunner(unittest.TestCase):
                         'name': 'TestRunner.TestFailing.test_something',
                         'max_score': 10,
                         'score': 0,
-                        'output': "mixins.py, line 34, in <listcomp>; [self.assertTrue(os.path.exists(f), f'{f} does not exist!') for f in files]; AssertionError: False is not true : thingsthatshallnotbe does not exist!"
+                        'output': "mixins.py, line 34, in <listcomp>; [self.assertTrue(os.path.exists(f), f'{f} does not "
+                                  "exist!') for f in files]; AssertionError: False is not true : thingsthatshallnotbe does not "
+                                  "exist! "
                     }
                 ],
                 'leaderboard': [],
                 'visibility': 'visible',
-                'execution_time': results.data['execution_time'] # Since this is dynamic.
+                'execution_time': results.data['execution_time']  # Since this is dynamic.
             },
             json.loads(results.json)
         )

@@ -86,13 +86,13 @@ class TestAsserts(unittest.TestCase):
         results = Run(['echo', 'hello_world'])()
         results = AssertStdoutMatches('hello_world')(results)
         self.assertIsInstance(results, CompletedProcess)
-        
+
         # Inferring stdout.
         results = WriteStdout('hello_world.stdout')(results)
         results = AssertStdoutMatches()(results)
         self.assertIsInstance(results, CompletedProcess)
         os.remove('hello_world.stdout')
-        
+
         # Cannot infer file of shell=True commands.
         with self.assertRaises(ValueError):
             AssertStdoutMatches()(Run('echo hello world', shell=True)())
@@ -116,7 +116,7 @@ class TestAsserts(unittest.TestCase):
         self.assertIsInstance(results, CompletedProcess)
 
         AssertStderrMatches(filepath='hello_world.stderr')(results)
-        
+
         os.remove('hello_world.stderr')
         return
 
@@ -151,7 +151,10 @@ class TestRun(unittest.TestCase):
             Run(['grep', 'pip'], input=lambda r: r.stdout),
             AssertStdoutMatches('python -m pip install grade')
         )()
-        results = Run(['grep', 'hello', '-'], input="hello world\nhear me test things!")()
+        Pipeline(
+            Run(['grep', 'hello', '-'], input="hello world\nhear me test things!"),
+            AssertStdoutMatches('hello world')
+        )()
 
 
 class TestWrite(unittest.TestCase):
@@ -177,7 +180,7 @@ class TestWrite(unittest.TestCase):
 
     def test_outputs(self):
         results = Run(['ls'])()
-        WriteOutputs()(results, 'temp')
+        WriteOutputs('temp')(results)
 
         with open('temp.stdout', 'r') as f:
             self.assertEqual(results.stdout, f.read())
@@ -188,23 +191,26 @@ class TestWrite(unittest.TestCase):
         os.remove('temp.stderr')
         return
 
+
 class TestLambda(unittest.TestCase):
 
+    # noinspection PyTypeChecker
     def test_improper_return(self):
         """ Lambda must return results. """
         results = Run(['ls'])()
         with self.assertRaises(TypeError):
-            results = Lambda(lambda results: True)(results)
+            Lambda(lambda r: True)(results)
         return
 
     def test_proper_return(self):
         """ Lambda that does return completedprocess. """
         results = Run(['ls'])()
-        results = Lambda(lambda results: results)(results)
+        results = Lambda(lambda r: r)(results)
         self.assertIsInstance(results, CompletedProcess)
         return
 
-    def randomFunction(self, results):
+    @staticmethod
+    def randomFunction(results):
         """ Function for the test below. """
         return results
 

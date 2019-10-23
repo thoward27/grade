@@ -29,8 +29,11 @@ class ScoringMixin:
         """ Updates the dictionary of the most recently called test method. """
         self.getTest().__dict__[attribute] = value
 
+    # noinspection PyUnresolvedReferences
     def require(self, *files) -> None:
-        """ Asserts all provided files exist. """
+        """ Asserts all provided files exist.
+        TODO: Should assertTrue be marked abstract?
+        """
         [self.assertTrue(os.path.exists(f), f'{f} does not exist!') for f in files]
 
     @property
@@ -92,7 +95,7 @@ class ScoringMixin:
 
     @leaderboardOrder.setter
     def leaderboardOrder(self, order) -> None:
-        """ Sets the leaderboard oreder attribute. """
+        """ Sets the leaderboard order attribute. """
         self.getTest().__dict__['__leaderboard_order__'] = order
 
     @property

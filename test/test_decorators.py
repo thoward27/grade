@@ -26,7 +26,7 @@ class TestDecorators(unittest.TestCase):
 
         # There should be nothing set here.
         with self.assertRaises(AttributeError):
-            test_default.__visibility__
+            getattr(test_default, '__visibility__')  # test_default.__visibility__
 
         @visibility('hidden')
         def test_hidden():
@@ -49,7 +49,7 @@ class TestDecorators(unittest.TestCase):
 
     def test_leaderboard(self):
         @leaderboard()
-        def test_defaults(set_leaderboard_score=None):
+        def test_defaults():
             return
 
         self.assertEqual(test_defaults.__leaderboard_title__, 'test_defaults')

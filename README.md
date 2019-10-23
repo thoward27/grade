@@ -12,9 +12,7 @@ Combining that with the `ScoringMixin` and the `GradedRunner`, allows you to out
 
 ### Pip
 
-```python
-python -m pip install grade
-```
+`python -m pip install grade`
 
 ### Docker
 
@@ -40,9 +38,11 @@ To properly output scores for Gradescope, simply write the `json` results to `/a
 Given the following python snippet at the end of your test file:
 
 ```python
+import unittest
+from grade.runners import GradedRunner
 if __name__ == "__main__":
     suite = unittest.TestLoader().discover('./', pattern='test*')
-    print(runners.GradedRunner().run(suite).json)
+    print(GradedRunner().run(suite).json)
 ```
 
 Simply redirect the output:
@@ -58,9 +58,12 @@ Of course, you can also write directly to the file in your code.
 > Ensure you only do this in one place, or it may overwrite your work!
 
 ```python
+import unittest
+from grade.runners import GradedRunner
+
 if __name__ == "__main__":
     suite = unittest.TestLoader().discover('./', pattern='test*')
-    results = runners.GradedRunner().run(suite).json
+    results = GradedRunner().run(suite)
     with open('/autograder/results/results.json', 'w') as f:
         f.write(results.json)
 ```

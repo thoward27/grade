@@ -1,8 +1,6 @@
-import sys
-sys.setrecursionlimit(500)
-
 import os
 import unittest
+
 from grade import pipeline, mixins, decorators, runners
 from grade.pipeline import Pipeline, Run, AssertExitSuccess, PartialCredit, AssertValgrindSuccess
 
@@ -106,6 +104,7 @@ class Tests(mixins.ScoringMixin, unittest.TestCase):
         """
         self.weight = 10
 
+        # noinspection PyShadowingNames
         def pipeline(testcase):
             return Pipeline(
                 Run(['echo', testcase]),
@@ -116,7 +115,7 @@ class Tests(mixins.ScoringMixin, unittest.TestCase):
         testcases = [c for c in 'hello world']
 
         # You can execute them all at once (all or nothing)
-        results = [pipeline(testcase)() for testcase in testcases]
+        [pipeline(testcase)() for testcase in testcases]
 
         # We can also award partial credit
         results = PartialCredit(map(pipeline, testcases), 10)()
@@ -131,8 +130,6 @@ class Tests(mixins.ScoringMixin, unittest.TestCase):
 
 
 if __name__ == '__main__':
-    import unittest
-    import sys
-    
     suite = unittest.TestLoader().discover('./', pattern='example.py')
-    print(runners.GradedRunner().run(suite).json)
+    results = runners.GradedRunner().run(suite)
+    print(results.json)

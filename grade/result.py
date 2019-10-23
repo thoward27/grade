@@ -1,8 +1,6 @@
-from typing import TextIO, List, Tuple
-from unittest import result
-import unittest
 import json
-import io
+import unittest
+from typing import TextIO, List, Tuple
 
 
 class Result(unittest.TextTestResult):
@@ -13,20 +11,26 @@ class Result(unittest.TextTestResult):
                  stream: TextIO,
                  descriptions: bool,
                  verbosity: int) -> None:
+        self._stdout_buffer = None
+        self._stderr_buffer = None
         super().__init__(stream, descriptions, verbosity)
         self.data = {
             'tests': [],
             'leaderboard': [],
         }
+        self._mirrorOutput = False
 
     @property
-    def json(self) -> dict:
-        return json.dumps(self.data, indent=4, sort_keys=True) 
+    def json(self) -> str:
+        """ Dumps a JSON string. """
+        return json.dumps(self.data, indent=4, sort_keys=True)
 
     @property
     def markdown(self) -> str:
+        """ Dumps a Markdown string. """
         raise NotImplementedError
 
+    # noinspection PyProtectedMember
     @staticmethod
     def getattr(test, attribute, default=None):
         return getattr(getattr(test, test._testMethodName), attribute, default)
@@ -44,7 +48,9 @@ class Result(unittest.TextTestResult):
 
     def getName(self, test):
         name = self.getattr(test, '__qualname__')
-        if description := test.shortDescription():
+        # TODO: Walrus once python 3.8 is supported.
+        description = test.shortDescription()
+        if description:
             name = f'{name}: {description}'
         return name
 
@@ -64,22 +70,23 @@ class Result(unittest.TextTestResult):
         self.updateLeaderboard(test)
         super().stopTest(test)
         return
-    
+
     def updateTests(self, test):
         result = {
             'name': self.getName(test),
             'max_score': self.getattr(test, '__weight__', 0),
             'score': self.getScore(test),
         }
-        if exceptions := self.getExceptions(test):
+        # TODO: Walrus, won't need to calculate outputs if exceptions work.
+        exceptions = self.getExceptions(test)
+        outputs = (self._stdout_buffer.getvalue() + self._stderr_buffer.getvalue()).strip()
+        if exceptions:
             result['output'] = self.parseExceptions(exceptions)
-        
-        elif outputs := (self._stdout_buffer.getvalue() + self._stderr_buffer.getvalue()).strip():
+        elif outputs:
             result['output'] = outputs
-        
+
         self.data['tests'].append(result)
         return
-
 
     def updateLeaderboard(self, test):
         if self.getattr(test, '__leaderboard_title__') is not None:

@@ -1,12 +1,10 @@
-import json
-import sys
-import time
-from typing import Optional, TextIO, Type
-from unittest import registerResult, TextTestRunner
 import io
 import time
+from typing import Optional, TextIO, Type
+from unittest import TextTestRunner
 
 from grade.result import Result
+
 
 class GradedRunner(TextTestRunner):
     def __init__(self,
@@ -21,10 +19,11 @@ class GradedRunner(TextTestRunner):
                  visibility: 'str' = 'visible') -> None:
         super().__init__(stream, descriptions, verbosity, failfast, buffer, Result, warnings, tb_locals=tb_locals)
         self.visibility = visibility
-    
-    def run(self, test):
+
+    def run(self, test) -> Result:
         start = time.time()
-        results = super().run(test)
+        # noinspection PyTypeChecker
+        results: Result = super().run(test)
         results.data['execution_time'] = round(time.time() - start)
         results.data['visibility'] = self.visibility
         return results
