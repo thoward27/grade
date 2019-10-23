@@ -76,6 +76,9 @@ class TestAsserts(unittest.TestCase):
 
         results = Run('echo hello', shell=True)()
         AssertValgrindSuccess()(results)
+
+        results = Run('grep pip < README.md', shell=True)()
+        AssertValgrindSuccess()(results)
         return
 
     def test_stdout_matches(self):
