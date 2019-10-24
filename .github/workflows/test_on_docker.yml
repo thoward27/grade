@@ -12,4 +12,4 @@ jobs:
     - name: Build
       run: |
         docker build --rm -t grade:latest .
-        docker run --rm -it grade:latest
+        docker run --rm grade:latest
