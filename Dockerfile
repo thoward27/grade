@@ -39,5 +39,6 @@ COPY . /tmp/grade/
 RUN python -m pip install /tmp/grade
 
 # Defaults
+WORKDIR /tmp/grade/
 ENTRYPOINT ["bash"]
-CMD ["python"]
+CMD ["python", "-m", "unittest", "discover"]

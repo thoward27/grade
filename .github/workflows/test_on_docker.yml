@@ -1,0 +1,14 @@
+name: Test
+
+on: [push]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v1
+    - name: Build
+      run: |
+        docker build --rm -t thoward27/grade:latest . && docker run --rm -it thoward27/grade:latest
