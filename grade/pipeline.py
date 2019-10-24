@@ -87,7 +87,7 @@ class AssertExitSuccess:
     def __call__(self, results: CompletedProcess) -> CompletedProcess:
         if results.returncode != 0:
             raise AssertionError(
-                f'{results.args} did not exit successfully. {results.returncode}\n{results.stdout}\n{results.stderr}')
+                f'{results.args} should have exited successfully. {results.returncode} != 0')
         return results
 
 
@@ -96,7 +96,7 @@ class AssertExitFailure:
 
     def __call__(self, results: CompletedProcess) -> CompletedProcess:
         if results.returncode == 0:
-            raise AssertionError(f'{results.args} exited successfully.')
+            raise AssertionError(f'{results.args} should have exited unsuccessfully.')
         return results
 
 
@@ -149,7 +149,7 @@ class AssertStdoutMatches:
 
         if results.stdout.strip() != self.stdout.strip():
             raise AssertionError(
-                f'{results.args} stdout does not match expected. {results.stdout}')
+                f'{results.args} stdout does not match expected.\n{self.stdout.strip()} !=\n{results.stdout.strip()}')
 
         return results
 
@@ -189,7 +189,7 @@ class AssertStderrMatches:
 
         if results.stderr.strip() != self.stderr.strip():
             raise AssertionError(
-                f'{results.args} stderr does not match expected.')
+                f'{results.args} stderr does not match expected.\n{self.stderr.strip()} !=\n{results.stderr.strip()}')
 
         return results
 
