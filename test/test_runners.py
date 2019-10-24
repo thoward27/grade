@@ -90,21 +90,21 @@ class TestRunner(unittest.TestCase):
                         "max_score": 10,
                         "score": 0,
                         "output": "test_runners.py, line 79, in test_error; raise SyntaxError; File \"<string>\", line None; "
-                                  "SyntaxError: <no detail available> "
+                                  "SyntaxError: <no detail available>"
                     },
                     {
                         "name": "TestRunner.TestPassing.test_failure",
                         "max_score": 10,
                         "score": 0,
                         "output": "test_runners.py, line 74, in test_failure; self.assertFalse(True); AssertionError: True is "
-                                  "not false; Stdout:; Some output. "
+                                  "not false; Stdout:; Some output."
                     },
                     {
                         "name": "TestRunner.TestPassing.test_failure_leaderboard: Testing something that fails.",
                         "max_score": 10,
                         "score": 0,
                         "output": "test_runners.py, line 68, in test_failure_leaderboard; self.assertTrue(False); "
-                                  "AssertionError: False is not true "
+                                  "AssertionError: False is not true"
                     },
                     {
                         "name": "TestRunner.TestPassing.test_full_credit: Testing one thing or another.",
@@ -157,9 +157,9 @@ class TestRunner(unittest.TestCase):
                         'name': 'TestRunner.TestFailing.test_something',
                         'max_score': 10,
                         'score': 0,
-                        'output': "mixins.py, line 34, in <listcomp>; [self.assertTrue(os.path.exists(f), f'{f} does not "
+                        'output': "mixins.py, line 37, in <listcomp>; [self.assertTrue(os.path.exists(f), f'{f} does not "
                                   "exist!') for f in files]; AssertionError: False is not true : thingsthatshallnotbe does not "
-                                  "exist! "
+                                  "exist!"
                     }
                 ],
                 'leaderboard': [],
