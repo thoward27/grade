@@ -3,6 +3,7 @@
 
 import os
 import unittest
+import shutil
 
 from grade.pipeline import *
 
@@ -45,7 +46,7 @@ class TestPartialCredit(unittest.TestCase):
         pipelines = map(lambda t: Pipeline(Run([t]), AssertExitSuccess()), ['ls', 'void'])
         with self.assertLogs() as logs:
             results = PartialCredit(pipelines, 10)()
-        self.assertIn("ERROR:root:[Errno 2] No such file or directory: 'void'", logs.output)
+        self.assertIn("ERROR:root:[Errno 2] No such file or directory: 'void'", logs.output[0])
         self.assertEqual(results.score, 5)
         return
 
@@ -70,6 +71,7 @@ class TestAsserts(unittest.TestCase):
         AssertExitFailure()(results)
         return
 
+    @unittest.skipIf(shutil.which('valgrind') is None, 'Need valgrind.')
     def test_valgrind(self):
         results = Run(['ls'])()
         AssertValgrindSuccess()(results)
