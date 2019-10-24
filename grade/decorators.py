@@ -1,6 +1,6 @@
 """ Modified Decorators Derived from Gradescope-utils.
 
-https://github.com/gradescope/gradescope-utils/blob/master/gradescope_utils/autograder_utils/decorators.py
+https://github.com/gradescope/gradescope-utils
 
 # TODO: Can these be made functions instead of classes?
 """

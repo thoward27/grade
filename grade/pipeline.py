@@ -75,7 +75,6 @@ class PartialCredit:
             try:
                 pipeline()
             except Exception as e:
-                # TODO: Figure out how to raise this properly in caller.
                 logging.exception(e, exc_info=False)
             else:
                 self._score += self.value / len(self.pipelines)
