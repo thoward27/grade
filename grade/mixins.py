@@ -1,6 +1,4 @@
 """ Mixins.
-
-# TODO: Move leaderboard title and order to class attributes, not test.
 """
 import os
 from inspect import stack
