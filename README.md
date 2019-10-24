@@ -8,6 +8,14 @@ Grade attempts alleviate typical problems in autograding workflows.
 By providing easy-to-use wrappers to work directly with executable files, Grade can test almost anything.
 Combining that with the `ScoringMixin` and the `GradedRunner`, allows you to output your scores for Gradescope or an in-house Markdown report.
 
+[![Documentation Status](https://readthedocs.org/projects/grade/badge/?version=latest)](https://grade.readthedocs.io/en/latest/?badge=latest)
+
+---
+
+## Documentation
+
+https://grade.readthedocs.io/en/latest/
+
 ## Setup
 
 ### Pip
