@@ -54,7 +54,8 @@ class TestPartialCredit(unittest.TestCase):
         pipelines = map(lambda t: Pipeline(Run(['ls']), AssertExitFailure()), range(10))
         with self.assertLogs() as logs:
             results = PartialCredit(pipelines, 10)()
-        self.assertIn("ERROR:root:['ls'] exited successfully.", logs.output)
+        self.assertEqual(10, len(logs.output))
+        self.assertIn("ERROR:root:['ls'] should have exited unsuccessfully.", logs.output)
         self.assertEqual(results.score, 0)
         return
 
