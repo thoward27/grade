@@ -309,7 +309,7 @@ class Check:
         try:
             self.callback(results)
         except AssertionError:
-            results.returncode = 1
+            results.returncode += 1
             results.stdout.write(f'Check Failed!\n{self.callback} raised an exception!')
         else:
             results.returncode = 0

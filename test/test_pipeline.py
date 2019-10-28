@@ -193,6 +193,13 @@ class TestCheck(unittest.TestCase):
         self.assertEqual(results.returncode, 0)
         return
 
+    def test_check_successful_failure(self):
+        """ Checks a failure for success. """
+        results = Run(['grep', '--notanarg'])()
+        results = Check(AssertExitSuccess())(results)
+        self.assertNotEqual(results.returncode, 0)
+        return
+
 
 class TestWrite(unittest.TestCase):
     """ Testing commands that write output. """
