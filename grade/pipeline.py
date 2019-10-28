@@ -6,6 +6,7 @@ headaches of typical executable testing.
 """
 import logging
 from functools import partial
+import re
 from os import path
 from subprocess import run, PIPE, CompletedProcess
 from typing import Callable, Iterator
@@ -191,6 +192,30 @@ class AssertStderrMatches:
             raise AssertionError(
                 f'{results.args} stderr does not match expected.\n{self.stderr.strip()} !=\n{results.stderr.strip()}')
 
+        return results
+
+
+class AssertRegexStdout:
+    """ Asserts programs' stdout contains the regex pattern provided.
+    """
+    def __init__(self, pattern: str):
+        self.pattern: re.Pattern = re.compile(pattern)
+
+    def __call__(self, results: CompletedProcess) -> CompletedProcess:
+        if not self.pattern.search(results.stdout):
+            raise AssertionError(f'{self.pattern.pattern} not found in {results.stdout}')
+        return results
+
+
+class AssertRegexStderr:
+    """ Asserts programs' stderr contains the regex pattern provided.
+    """
+    def __init__(self, pattern: str):
+        self.pattern: re.Pattern = re.compile(pattern)
+
+    def __call__(self, results: CompletedProcess) -> CompletedProcess:
+        if not self.pattern.search(results.stderr):
+            raise AssertionError(f'{self.pattern.pattern} not found in {results.stderr}')
         return results
 
 

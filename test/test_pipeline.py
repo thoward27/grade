@@ -123,6 +123,23 @@ class TestAsserts(unittest.TestCase):
         os.remove('hello_world.stderr')
         return
 
+    def test_regex_stdout(self):
+        results = Run(['cat', 'README.md'])()
+        results = AssertRegexStdout(r'python')(results)
+        self.assertIsInstance(results, CompletedProcess)
+        with self.assertRaises(AssertionError) as e:
+            AssertRegexStdout(r'idontthinkthisshouldbehere')(results)
+        return
+
+    def test_regex_stderr(self):
+        results = Run('>&2 echo hello_world', shell=True)()
+        results = AssertRegexStderr(r'hello')(results)
+        self.assertIsInstance(results, CompletedProcess)
+        with self.assertRaises(AssertionError):
+            AssertRegexStderr(f'bah humbug')(results)
+        return
+
+
 
 class TestRun(unittest.TestCase):
 
