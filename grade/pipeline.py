@@ -295,6 +295,27 @@ class WriteStdout:
         return results
 
 
+class Check:
+    """ Prevents raising exceptions, alters returncode instead.
+
+    Wrap any assertion in this to make it a "check" instead of an
+    assert. Check does not raise an exception, but rather alters the
+    returncode to match what the assertion would have done.
+    """
+    def __init__(self, callback: Callback):
+        self.callback = callback
+
+    def __call__(self, results: CompletedProcess) -> CompletedProcess:
+        try:
+            self.callback(results)
+        except AssertionError:
+            results.returncode = 1
+            results.stdout.write(f'Check Failed!\n{self.callback} raised an exception!')
+        else:
+            results.returncode = 0
+        finally:
+            return results
+
 class WriteStderr:
     """ Writes the current stderr to the given file.
 

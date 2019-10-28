@@ -177,6 +177,23 @@ class TestRun(unittest.TestCase):
         )()
 
 
+class TestCheck(unittest.TestCase):
+    """ Tests the Check command. """
+    def test_check_successful(self):
+        """ Check should not change a successful execution by asserting exit success. """
+        results = Run(['ls'])()
+        results = Check(AssertExitSuccess())(results)
+        self.assertEqual(results.returncode, 0)
+        return
+
+    def test_check_failure(self):
+        """ Check should set results to successful by asserting exit failure. """
+        results = Run(['grep', '--asdfghjk'])()
+        results = Check(AssertExitFailure())(results)
+        self.assertEqual(results.returncode, 0)
+        return
+
+
 class TestWrite(unittest.TestCase):
     """ Testing commands that write output. """
 
