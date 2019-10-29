@@ -11,8 +11,8 @@ setup(
     license='AGPL',
     author='Tom Howard',
     author_email='info@tomhoward.codes',
-    description='An package for easy autograding.',
+    description='A package for easy autograding.',
     long_description=long_description,
     long_description_content_type='text/markdown',
-    python_requires='>=3.8',
+    python_requires='>=3.7',
 )
