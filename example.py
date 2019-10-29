@@ -11,8 +11,8 @@ def student_function(x: list, m: int) -> list:
 
 class Tests(mixins.ScoringMixin, unittest.TestCase):
 
-    # First, override the setUpClass method to prevent any test
-    # case from running in invalid conditions.
+    # You can override the setUpClass method to prevent any test
+    # case from running in invalid conditions, this impacts JSON output.
 
     @classmethod
     def setUpClass(cls):
@@ -20,6 +20,8 @@ class Tests(mixins.ScoringMixin, unittest.TestCase):
         """
         # Check compilation of code.
         compile = pipeline.Run(['ls'])()
+        
+        # Assert after this point only if you want no output for any tests.
         assert(compile.returncode == 0)
 
         # Check for file existence.
@@ -27,6 +29,15 @@ class Tests(mixins.ScoringMixin, unittest.TestCase):
             # Provide a more descriptive exception.
             raise AssertionError('Important thing <x> is missing.')
         return
+
+    # To provide output for every test, alter setUp():
+
+    def setUp(self):
+        """ Require code files, check things.
+        """
+        # This will throw an exception if all files do not exist.
+        self.require('example.py', 'README.md')
+
 
     # If you want to test for software compilation, at this point,
     # you can just assertTrue(True), since setUpClass already
