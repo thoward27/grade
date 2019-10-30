@@ -1,11 +1,12 @@
 from setuptools import setup
+import grade
 
 with open('README.md', 'r') as f:
     long_description = f.read()
 
 setup(
     name='grade',
-    version='0.8.0',
+    version=grade.__version__,
     packages=['grade'],
     url='https://github.com/thoward27/grade',
     license='AGPL',
@@ -14,5 +15,5 @@ setup(
     description='A package for easy autograding.',
     long_description=long_description,
     long_description_content_type='text/markdown',
-    python_requires='>=3.7',
+    python_requires='>=3.6',
 )
