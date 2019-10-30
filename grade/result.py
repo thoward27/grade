@@ -28,7 +28,20 @@ class Result(unittest.TextTestResult):
     @property
     def markdown(self) -> str:
         """ Dumps a Markdown string. """
+        return '\n\n'.join([
+            f"# Final Score: {self.score}/{self.maxScore}",
+            f"## Test Results",
+            *[f"## {test['name']} {test['score']}/{test['max_score']}\n\n{test['output'] if 'output' in test else ''}" for test in self.data['tests']]
+        ])
         raise NotImplementedError
+
+    @property
+    def score(self) -> int:
+        return sum([test['score'] for test in self.data['tests']])
+
+    @property
+    def maxScore(self) -> int:
+        return sum([test['max_score'] for test in self.data['tests']])
 
     # noinspection PyProtectedMember
     @staticmethod

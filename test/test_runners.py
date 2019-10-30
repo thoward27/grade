@@ -97,6 +97,14 @@ class TestRunner(unittest.TestCase):
         self.assertIn('execution_time', results)        
         return
 
+    def test_markdown_successful(self):
+        suite = unittest.TestLoader().loadTestsFromTestCase(self.TestPassing)
+        results = GradedRunner().run(suite)
+        results = results.markdown
+        print(results)
+        self.assertIsInstance(results, str)
+        return
+
     class TestFailing(ScoringMixin, unittest.TestCase):
 
         def setUp(self):
