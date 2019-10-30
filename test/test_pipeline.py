@@ -160,7 +160,7 @@ class TestRun(unittest.TestCase):
 
     def test_timeout(self):
         import subprocess
-        with self.assertRaises(subprocess.TimeoutExpired):
+        with self.assertRaises(TimeoutError):
             Run(['sleep', '30'], timeout=1)()
         return
 
@@ -238,15 +238,7 @@ class TestWrite(unittest.TestCase):
 
 class TestLambda(unittest.TestCase):
 
-    # noinspection PyTypeChecker
-    def test_improper_return(self):
-        """ Lambda must return results. """
-        results = Run(['ls'])()
-        with self.assertRaises(TypeError):
-            Lambda(lambda r: True)(results)
-        return
-
-    def test_proper_return(self):
+    def test_simple(self):
         """ Lambda that does return completedprocess. """
         results = Run(['ls'])()
         results = Lambda(lambda r: r)(results)

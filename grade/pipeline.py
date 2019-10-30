@@ -8,7 +8,7 @@ import logging
 from functools import partial
 import re
 from os import path
-from subprocess import run, PIPE, CompletedProcess
+from subprocess import run, PIPE, CompletedProcess, TimeoutExpired
 from typing import Callable, Iterator
 
 Callback = Callable[[CompletedProcess], CompletedProcess]
@@ -35,7 +35,8 @@ class Pipeline:
     def __call__(self) -> CompletedProcess:
         results = None
         for callback in self.callbacks:
-            results = callback(results)
+            temp = callback(results)
+            results = temp if type(temp) is CompletedProcess else results
         return results
 
     def __iter__(self) -> Callback:
@@ -87,8 +88,11 @@ class AssertExitSuccess:
 
     def __call__(self, results: CompletedProcess) -> CompletedProcess:
         if results.returncode != 0:
-            raise AssertionError(
-                f'{results.args} should have exited successfully. {results.returncode} != 0')
+            raise AssertionError('\n'.join([
+                f'{results.args} should have exited successfully. {results.returncode} != 0',        
+                results.stdout,
+                results.stderr
+            ]))
         return results
 
 
@@ -258,8 +262,10 @@ class Run:
     def __call__(self, results: CompletedProcess = None) -> CompletedProcess:
         if callable(self.input):
             self.input = self.input(results)
-
-        return self._run(self.command, input=self.input, **self.kwargs)
+        try:
+            return self._run(self.command, input=self.input, **self.kwargs)
+        except TimeoutExpired:
+            raise TimeoutError(f'{self.command} timed out.')
 
 
 class Lambda:
@@ -270,8 +276,6 @@ class Lambda:
 
     def __call__(self, results: CompletedProcess) -> CompletedProcess:
         results = self.function(results)
-        if type(results) is not CompletedProcess:
-            raise TypeError('Lambda did not return CompletedProcess.')
         return results
 
 

@@ -13,6 +13,7 @@
 import os
 import sys
 sys.path.insert(0, os.path.abspath('..'))
+import grade
 
 
 # -- Project information -----------------------------------------------------
@@ -22,7 +23,7 @@ copyright = '2019, Tom Howard'
 author = 'Tom Howard'
 
 # The full version, including alpha/beta/rc tags
-release = 'v0.8.0'
+release = grade.__version__
 
 
 # -- General configuration ---------------------------------------------------
