@@ -101,7 +101,6 @@ class TestRunner(unittest.TestCase):
         suite = unittest.TestLoader().loadTestsFromTestCase(self.TestPassing)
         results = GradedRunner().run(suite)
         results = results.markdown
-        print(results)
         self.assertIsInstance(results, str)
         return
 

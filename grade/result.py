@@ -29,11 +29,10 @@ class Result(unittest.TextTestResult):
     def markdown(self) -> str:
         """ Dumps a Markdown string. """
         return '\n\n'.join([
-            f"# Final Score: {self.score}/{self.maxScore}",
-            f"## Test Results",
-            *[f"## {test['name']} {test['score']}/{test['max_score']}\n\n{test['output'] if 'output' in test else ''}" for test in self.data['tests']]
+            f"# Grade Results",
+            f"## Autograder Score: {self.score}/{self.maxScore}",
+            *[f"### {test['name']} {test['score']}/{test['max_score']}\n\n{test['output'] if 'output' in test else ''}" for test in self.data['tests']]
         ])
-        raise NotImplementedError
 
     @property
     def score(self) -> int:
