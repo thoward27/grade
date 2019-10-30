@@ -16,9 +16,10 @@ RUN apt-get install -y \
     curl 
 
 # Install grade
-COPY . /tmp/grade/
-RUN python -m pip install /tmp/grade
+RUN mkdir /app/
+COPY . /app/
+RUN python -m pip install /app/
 
 # Defaults
-WORKDIR /tmp/grade/
+WORKDIR /app/
 CMD ["python", "-m", "unittest", "discover"]
