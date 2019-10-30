@@ -15,7 +15,9 @@ if __name__ == "__main__":
     parser.add_argument('-p', '--pattern', default="test*", help="Glob pattern to find test files.")
 
     # Output related.
-    parser.add_argument('--json', action='store_true')
+    output = parser.add_mutually_exclusive_group()
+    output.add_argument('--markdown', action='store_true')
+    output.add_argument('--json', action='store_true')
 
     args = parser.parse_args()
 
