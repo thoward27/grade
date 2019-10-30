@@ -96,45 +96,87 @@ class TestAsserts(unittest.TestCase):
         AssertValgrindSuccess()(results)
         return
 
+class TestStdoutMatches(unittest.TestCase):
+
+    def test_stdout_no_match(self):
+        """ What happens when stdout does not match? """
+        results = Run(['echo', 'hello_world'])()
+        with self.assertRaises(AssertionError):
+            AssertStdoutMatches('goodbye_world')(results)
+        return
+
     def test_stdout_matches(self):
-        # Specifying stdout.
+        """ What if stdout does match? """
         results = Run(['echo', 'hello_world'])()
         results = AssertStdoutMatches('hello_world')(results)
         self.assertIsInstance(results, CompletedProcess)
+        return
 
-        # Inferring stdout.
-        results = WriteStdout('hello_world.stdout')(results)
+    def test_inferring_filename(self):
+        """ Can we infer filename if conventions are followed? """
+        results = Run(['echo', 'hello_world'])()
+        results = WriteOutputs('hello_world')(results)
         results = AssertStdoutMatches()(results)
         self.assertIsInstance(results, CompletedProcess)
         os.remove('hello_world.stdout')
-
-        # Cannot infer file of shell=True commands.
-        with self.assertRaises(ValueError):
-            AssertStdoutMatches()(Run('echo hello world', shell=True)())
-
-        results = Pipeline(
-            Run(['echo', 'hello world']),
-            WriteStdout('temp'),
-        )()
-        AssertStdoutMatches(filepath='temp')(results)
-        os.remove('temp')
-        return
-
-    def test_stderr_matches(self):
-        results = Run('>&2 echo hello_world', shell=True)()
-        results = AssertStderrMatches('hello_world')(results)
-        self.assertIsInstance(results, CompletedProcess)
-
-        results = WriteStderr('hello_world.stderr')(results)
-        with self.assertRaises(ValueError):
-            results = AssertStderrMatches()(results)
-        self.assertIsInstance(results, CompletedProcess)
-
-        AssertStderrMatches(filepath='hello_world.stderr')(results)
-
         os.remove('hello_world.stderr')
         return
 
+    def test_cannot_infer_filename(self):
+        """ What if there is no file to infer from? """
+        with self.assertRaises(ValueError):
+            AssertStdoutMatches()(Run('echo hello world', shell=True)())
+
+        results = Run(['echo', 'hello world'])()
+        with self.assertRaises(AssertionError):
+            AssertStdoutMatches()(results)
+        return
+
+    def test_cannot_infer_shell(self):
+        """ Should not be able to infer filenames when shell=True """
+        results = Run('echo hello_world', shell=True)()
+        with self.assertRaises(ValueError):
+            AssertStdoutMatches()(results)
+
+class TestAssertStderrMatches(unittest.TestCase):
+
+    def test_stderr_no_match(self):
+        """ What happens when stderr does not match? """
+        results = Run('>&2 echo hello_world', shell=True)()
+        with self.assertRaises(AssertionError):
+            AssertStderrMatches('goodbye_world')(results)
+        return
+
+    def test_stderr_matches(self):
+        """ What if stderr does match? """
+        results = Run('>&2 echo hello_world', shell=True)()
+        results = AssertStderrMatches('hello_world')(results)
+        self.assertIsInstance(results, CompletedProcess)
+    
+    def test_inferring_filename(self):
+        """ Can we infer filename if conventions are followed? """
+        results = Run(['grep', '-h'])()
+        results = WriteOutputs('-h')(results)
+        results = AssertStderrMatches()(results)
+        self.assertIsInstance(results, CompletedProcess)
+        os.remove('-h.stdout')
+        os.remove('-h.stderr')
+    
+    def test_cannot_infer_filename(self):
+        """ What if there is no file to infer from? """
+        results = Run(['grep', '-h'])()
+        with self.assertRaises(AssertionError):
+            AssertStderrMatches()(results)
+        return
+
+    def test_cannot_infer_shell(self):
+        """ Should not be able to infer filename when shell=True """
+        results = Run('>&2 echo hello_world', shell=True)()
+        with self.assertRaises(ValueError):
+            AssertStderrMatches()(results)
+        return
+
+class TestAssertRegex(unittest.TestCase):
     def test_regex_stdout(self):
         results = Run(['cat', 'README.md'])()
         results = AssertRegexStdout(r'python')(results)
