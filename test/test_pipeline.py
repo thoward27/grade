@@ -33,6 +33,18 @@ class TestPipeline(unittest.TestCase):
         tests = map(lambda t: Pipeline(Run(['ls']), AssertExitSuccess()), range(10))
         [test() for test in tests]
 
+    def test_iteration(self):
+        pipeline = Pipeline(
+            Run(['ls']),
+            AssertExitSuccess(),
+            AssertValgrindSuccess(),
+            WriteOutputs('temp'),
+        )
+        [self.assertTrue(callable(callback)) for callback in pipeline]
+        self.assertIsInstance(pipeline[1], AssertExitSuccess)
+        self.assertEqual(len(pipeline), 4)
+        return
+
 
 class TestPartialCredit(unittest.TestCase):
 
