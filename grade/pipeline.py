@@ -336,7 +336,7 @@ class WriteStderr:
 
         with open(self.filepath, 'w') as f:
             f.write(results.stderr)
-
+        
         return results
 
 

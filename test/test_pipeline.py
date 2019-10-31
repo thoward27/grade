@@ -96,7 +96,7 @@ class TestAsserts(unittest.TestCase):
         AssertValgrindSuccess()(results)
         return
 
-class TestStdoutMatches(unittest.TestCase):
+class TestAssertStdoutMatches(unittest.TestCase):
 
     def test_stdout_no_match(self):
         """ What happens when stdout does not match? """
@@ -138,6 +138,20 @@ class TestStdoutMatches(unittest.TestCase):
         with self.assertRaises(ValueError):
             AssertStdoutMatches()(results)
 
+    def test_passing_both(self):
+        results = Run(['echo', 'hello'])()
+        with self.assertRaises(ValueError):
+            AssertStdoutMatches('hello', 'world')(results)
+        return
+
+    def test_passing_filename(self):
+        results = Run(['echo', 'hello'])()
+        with open('hello.stdout', 'w') as f:
+            f.write('hello')
+        AssertStdoutMatches(filepath='hello.stdout')(results)
+        os.remove('hello.stdout')
+        return
+
 class TestAssertStderrMatches(unittest.TestCase):
 
     def test_stderr_no_match(self):
@@ -175,6 +189,21 @@ class TestAssertStderrMatches(unittest.TestCase):
         with self.assertRaises(ValueError):
             AssertStderrMatches()(results)
         return
+
+    def test_passing_both(self):
+        results = Run('>&2 echo hello', shell=True)()
+        with self.assertRaises(ValueError):
+            AssertStderrMatches('hello', 'world')(results)
+        return
+
+    def test_passing_filename(self):
+        results = Run('>&2 echo hello', shell=True)()
+        with open('hello.stderr', 'w') as f:
+            f.write('hello')
+        AssertStderrMatches(filepath='hello.stderr')(results)
+        os.remove('hello.stderr')
+        return
+        
 
 class TestAssertRegex(unittest.TestCase):
     def test_regex_stdout(self):
@@ -261,6 +290,10 @@ class TestWrite(unittest.TestCase):
     def test_stdout(self):
         results = Run(['echo', 'hello'])()
         results = WriteStdout()(results)
+        
+        with self.assertRaises(FileExistsError):
+            WriteStdout(overwrite=False)(results)
+
         self.assertIsInstance(results, CompletedProcess)
         with open('temp', 'r') as f:
             self.assertEqual(results.stdout, f.read())
@@ -270,6 +303,10 @@ class TestWrite(unittest.TestCase):
     def test_stderr(self):
         results = Run('>&2 echo error', shell=True)()
         results = WriteStderr()(results)
+
+        with self.assertRaises(FileExistsError):
+            WriteStderr(overwrite=False)(results)
+
         self.assertIsInstance(results, CompletedProcess)
         with open('temp', 'r') as f:
             self.assertEqual(results.stderr, f.read())
