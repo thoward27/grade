@@ -258,6 +258,10 @@ class TestRun(unittest.TestCase):
             Run(['grep', 'hello', '-'], input="hello world\nhear me test things!"),
             AssertStdoutMatches('hello world')
         )()
+        Pipeline(
+            Run(['python', '-c', 'x = input(); print(x)'], input='5'),
+            AssertStdoutMatches('5')
+        )()
 
 
 class TestCheck(unittest.TestCase):
