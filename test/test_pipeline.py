@@ -251,8 +251,8 @@ class TestRun(unittest.TestCase):
         Pipeline(
             Run(['cat', 'README.md']),
             AssertExitSuccess(),
-            Run(['grep', 'pip'], input=lambda r: r.stdout),
-            AssertStdoutMatches('`python -m pip install grade`')
+            Run(['grep', 'Setup'], input=lambda r: r.stdout),
+            AssertStdoutMatches('## Setup')
         )()
         Pipeline(
             Run(['grep', 'hello', '-'], input="hello world\nhear me test things!"),
