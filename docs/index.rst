@@ -10,10 +10,11 @@ especially when grading executable files.
     :maxdepth: 4
 
     source/quickstart
-    source/decorators
-    source/GradedRunner
+    source/main
     source/pipeline
+    source/decorators
     source/ScoringMixin
+    source/GradedRunner
 
 Quickstart
 ===============
