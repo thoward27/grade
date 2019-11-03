@@ -97,7 +97,7 @@ class ScoringMixin:
     @leaderboardOrder.setter
     def leaderboardOrder(self, order) -> None:
         """ Sets the leaderboard order attribute. """
-        self.setattr('__leaderboard_order', order)
+        self.setattr('__leaderboard_order__', order)
 
     @property
     def leaderboardScore(self) -> Union[int, None]:
