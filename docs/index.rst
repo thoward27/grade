@@ -16,7 +16,7 @@ especially when grading executable files.
     source/ScoringMixin
     source/GradedRunner
 
-Quickstart
+Quick Start
 ===============
 
 Grade turns any `unittest.TestCase` into an autograder package.
