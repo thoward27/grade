@@ -52,6 +52,7 @@ class TestRunner(unittest.TestCase):
             self.leaderboardScore = 10
 
             self.assertTrue(True)
+            print("Output when successful")
             return
 
         def test_partial_credit(self):
@@ -87,7 +88,7 @@ class TestRunner(unittest.TestCase):
         self.assertIn('tests', results)
         self.assertEqual(5, len(results['tests']))
         self.assertEqual(15, sum([test['score'] for test in results['tests']]))
-        self.assertTrue(all(['output' in test for test in results['tests'] if test['score'] < test['max_score']]))
+        self.assertTrue(all(['output' in test for test in results['tests']]))
         
         self.assertIn('leaderboard', results)
         self.assertEqual(2, len(results['leaderboard']))
@@ -146,5 +147,5 @@ class TestClassSetupFails(unittest.TestCase):
         suite = unittest.TestLoader().loadTestsFromTestCase(self.Test)
         results = GradedRunner().run(suite)
         results = json.loads(results.json)
-        
+
         self.assertEqual(len(results['tests']), 1)
