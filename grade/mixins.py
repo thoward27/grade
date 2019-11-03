@@ -2,7 +2,7 @@
 """
 import os
 from inspect import stack
-from typing import List, Callable, Union
+from typing import List, Callable, Union, Tuple
 
 
 class ScoringMixin:
@@ -14,10 +14,13 @@ class ScoringMixin:
     def __str__(self) -> str:
         return type(self).__name__
 
+    def getTests(self) -> List[Tuple[str, Callable]]:
+        return [(key, getattr(self, key)) for key in dir(self) if key.startswith('test')]
+
     def getTest(self) -> Callable:
         """ Returns the topmost test method on the stack. """
         if not self.methods:
-            self.methods = [(key, getattr(self, key)) for key in dir(self) if key.startswith('test')]
+            self.methods = self.getTests()
 
         caller = [frame for frame in stack() if frame.function.startswith('test')][0]
         caller = [func for name, func in self.methods if name == caller.function][0]
@@ -42,7 +45,7 @@ class ScoringMixin:
     @weight.setter
     def weight(self, weight: int) -> None:
         """ Sets the weight of the test. """
-        self.getTest().__dict__['__weight__'] = weight
+        self.setattr('__weight__', weight)
 
     @property
     def score(self) -> Union[int, float]:
@@ -52,7 +55,7 @@ class ScoringMixin:
     @score.setter
     def score(self, score: Union[int, float]) -> None:
         """ Sets the score for the test. """
-        self.getTest().__dict__['__score__'] = score
+        self.setattr('__score__', score)
 
     @property
     def visibility(self) -> str:

@@ -129,3 +129,22 @@ class TestRunner(unittest.TestCase):
         
         self.assertIn('execution_time', results)
         return
+
+class TestClassSetupFails(unittest.TestCase):
+
+    class Test(ScoringMixin, unittest.TestCase):
+
+        @classmethod
+        def setUpClass(cls):
+            assert False
+
+        def test_true(self):
+            self.weight = 10
+            self.assertTrue(True)
+
+    def test_results(self):
+        suite = unittest.TestLoader().loadTestsFromTestCase(self.Test)
+        results = GradedRunner().run(suite)
+        results = json.loads(results.json)
+        
+        self.assertEqual(len(results['tests']), 1)
