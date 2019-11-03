@@ -96,3 +96,10 @@ The output from running Grade is controlled by output flags,
 the default output is None. To output the grades to JSON, simply run
 `python -m grade . --json`. This is the format you must use when
 working with Gradescope, but you may also use `--markdown`.
+
+
+Further Reading
+=====================
+
+Within the Github Repository for this project you will find a file
+`example.py`, which contains a more thorough example.
