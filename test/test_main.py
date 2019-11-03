@@ -6,10 +6,6 @@ from grade.pipeline import *
 
 class TestMain(unittest.TestCase):
 
-    def test_defaults(self):
-        with self.assertRaises(TimeoutError):
-            Run(['python', '-m', 'grade', '.'], timeout=3)()
-
     def test_successful_no_output(self):
         Pipeline(
             Run(['python', '-m', 'grade', '.', '-p', 'test_mixins.py']),
