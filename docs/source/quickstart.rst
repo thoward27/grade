@@ -58,12 +58,9 @@ portion of the code. With Grade, we can write a testing suite as follows:
 
     class Tests(ScoringMixin, unittest.TestCase):
 
-        def setUp(self):
-            """ setUp is called before each test.
-
-            By requiring files here, students cannot receive any credit
-            without completing the assignment.
-            """
+        @classmethod
+        def setUpClass(cls):
+            """ Any failures here prevent a student from accruing any points. """
             self.require('studentscode.py')
 
         def test_encode_decode(self):
