@@ -10,7 +10,7 @@ class TestScoringMixin(ScoringMixin, unittest.TestCase):
     def test_find(self):
         # We have two files named make* in docs,
         # one capitalized, the other not.
-        files = self.find('docs/**/[mM]ake*')
+        files = self.find('docs/**/make*')
         self.assertEqual(len(files), 2)
 
     def test_requires(self):

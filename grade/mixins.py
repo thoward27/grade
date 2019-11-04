@@ -45,6 +45,8 @@ class ScoringMixin:
     def find(pattern, recursive=True) -> List[str]:
         """ Returns all files matching pattern, case insensitive.
         """
+        # Make it case insensitive
+        pattern = ''.join([p if not p.isalpha() else f'[{p.lower()}{p.upper()}]' for p in pattern])
         return glob(pattern, recursive=recursive)
 
     @property
