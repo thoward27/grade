@@ -1,6 +1,8 @@
 """ Mixins.
 """
+import re
 import os
+from glob import glob
 from inspect import stack
 from typing import List, Callable, Union, Tuple
 
@@ -35,7 +37,15 @@ class ScoringMixin:
     def require(*files) -> None:
         """ Asserts all provided files exist.
         """
-        assert all((os.path.exists(f) for f in files))
+        assert files, "Nothing to require."
+        for f in files:
+            assert os.path.exists(f), f'{f} does not exist!'
+
+    @staticmethod
+    def find(pattern, recursive=True) -> List[str]:
+        """ Returns all files matching pattern, case insensitive.
+        """
+        return glob(pattern, recursive=recursive)
 
     @property
     def weight(self) -> int:
