@@ -124,13 +124,12 @@ class AssertValgrindSuccess:
     """ Asserts that there are no valgrind errors reported. """
 
     def __call__(self, results: CompletedProcess) -> CompletedProcess:
-        # TODO: add --exit-on-first-error=yes when valgrind --version>=3.14
         if type(results.args) is list:
             results = Run(
-                ['valgrind', '-q', '--error-exitcode=1', *results.args])()
+                ['valgrind', '-q', '--error-exitcode=1', '--exit-on-first-error=yes', *results.args])()
         elif type(results.args) is str:
             results = Run(
-                f'valgrind -q --error-exitcode=1 {results.args}', shell=True)()
+                f'valgrind -q --error-exitcode=1 --exit-on-first-error=yes {results.args}', shell=True)()
         results = AssertExitSuccess()(results)
         return results
 
