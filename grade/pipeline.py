@@ -4,12 +4,13 @@ Pipeline components allow you chain together tests
 for executable files within a few lines, without the
 headaches of typical executable testing.
 """
+from collections import deque
 import logging
 from functools import partial
 import re
 from os import path
 from subprocess import run, PIPE, CompletedProcess, TimeoutExpired
-from typing import Callable, Iterator
+from typing import Callable, Iterator, List, Union
 
 Callback = Callable[[CompletedProcess], CompletedProcess]
 
@@ -53,15 +54,28 @@ class Pipeline:
 class PartialCredit:
     """ Executes a list of pipelines, assigning credit for each successful run.
 
-    Divides the value given across all pipelines, giving equal weight 
-    to each pipeline in the list.
+    If value is a single integer, its' value is distributed between all pipelines;
+    if value is a list of integers, the values from the list are assigned sequentially
+    to the pipelines and, if the length of the list is not equal to the number of
+    pipelines, it wraps the values and repeats the first entries in the list.
 
-    # TODO: Provide a weighting mechanism.
+    Example:
+    A = Pipeline
+    B = Pipeline
+    C = Pipeline
+    PartialCredit([A, B, C], [1, 2])
+    A.max_score == 1
+    B.max_score == 2
+    C.max_score == 1
+
+    :param pipelines: an iterator of Pipeline objects.
+    :param value: total value for the pipeline; either an int, or a list of ints (accessed via modulo arithmetic).
     """
-
-    def __init__(self, pipelines: Iterator[Pipeline], value: int):
+    def __init__(self, pipelines: Iterator[Pipeline], value: Union[int, List[int]]):
         self.pipelines = list(pipelines)
-        self.value = value
+        self.max_score = value
+        
+        self.value = deque(value if type(value) is list else [value / len(self.pipelines)])
         self._score = 0
         self._executed = False
 
@@ -69,7 +83,7 @@ class PartialCredit:
     def score(self) -> float:
         """ Returns the aggregate score, raises exception if not run. """
         assert self._executed
-        return min(self.value, round(self._score, 2))
+        return min(self.max_score, round(self._score, 2))
 
     def __call__(self):
         self._executed = True
@@ -79,7 +93,8 @@ class PartialCredit:
             except Exception as e:
                 logging.exception(e, exc_info=False)
             else:
-                self._score += self.value / len(self.pipelines)
+                self._score += self.value[0]
+                self.value.rotate()
         return self
 
 
