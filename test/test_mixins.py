@@ -7,9 +7,18 @@ from grade.mixins import *
 
 class TestScoringMixin(ScoringMixin, unittest.TestCase):
 
+    def test_find(self):
+        # We have two files named make* in docs,
+        # one capitalized, the other not.
+        files = self.find('docs/**/make*')
+        self.assertEqual(len(files), 2)
+
     def test_requires(self):
         with self.assertRaises(AssertionError):
             self.require('iDoNotExist')
+        with self.assertRaises(AssertionError):
+            self.require()
+        self.require('README.md')
 
     def test_getTest(self):
         self.assertEqual(self.getTest().__name__, 'test_getTest')

@@ -4,11 +4,13 @@ Pipeline components allow you chain together tests
 for executable files within a few lines, without the
 headaches of typical executable testing.
 """
+from collections import deque
 import logging
 from functools import partial
+import re
 from os import path
-from subprocess import run, PIPE, CompletedProcess
-from typing import Callable, Iterator
+from subprocess import run, PIPE, CompletedProcess, TimeoutExpired
+from typing import Callable, Iterator, List, Union
 
 Callback = Callable[[CompletedProcess], CompletedProcess]
 
@@ -34,7 +36,8 @@ class Pipeline:
     def __call__(self) -> CompletedProcess:
         results = None
         for callback in self.callbacks:
-            results = callback(results)
+            temp = callback(results)
+            results = temp if type(temp) is CompletedProcess else results
         return results
 
     def __iter__(self) -> Callback:
@@ -51,15 +54,28 @@ class Pipeline:
 class PartialCredit:
     """ Executes a list of pipelines, assigning credit for each successful run.
 
-    Divides the value given across all pipelines, giving equal weight 
-    to each pipeline in the list.
+    If value is a single integer, its' value is distributed between all pipelines;
+    if value is a list of integers, the values from the list are assigned sequentially
+    to the pipelines and, if the length of the list is not equal to the number of
+    pipelines, it wraps the values and repeats the first entries in the list.
 
-    # TODO: Provide a weighting mechanism.
+    Example:
+    A = Pipeline
+    B = Pipeline
+    C = Pipeline
+    PartialCredit([A, B, C], [1, 2])
+    A.max_score == 1
+    B.max_score == 2
+    C.max_score == 1
+
+    :param pipelines: an iterator of Pipeline objects.
+    :param value: total value for the pipeline; either an int, or a list of ints (accessed via modulo arithmetic).
     """
-
-    def __init__(self, pipelines: Iterator[Pipeline], value: int):
+    def __init__(self, pipelines: Iterator[Pipeline], value: Union[int, List[int]]):
         self.pipelines = list(pipelines)
-        self.value = value
+        self.max_score = value
+        
+        self.value = deque(value if type(value) is list else [value / len(self.pipelines)])
         self._score = 0
         self._executed = False
 
@@ -67,7 +83,7 @@ class PartialCredit:
     def score(self) -> float:
         """ Returns the aggregate score, raises exception if not run. """
         assert self._executed
-        return min(self.value, round(self._score, 2))
+        return min(self.max_score, round(self._score, 2))
 
     def __call__(self):
         self._executed = True
@@ -77,7 +93,8 @@ class PartialCredit:
             except Exception as e:
                 logging.exception(e, exc_info=False)
             else:
-                self._score += self.value / len(self.pipelines)
+                self._score += self.value[0]
+                self.value.rotate()
         return self
 
 
@@ -86,8 +103,11 @@ class AssertExitSuccess:
 
     def __call__(self, results: CompletedProcess) -> CompletedProcess:
         if results.returncode != 0:
-            raise AssertionError(
-                f'{results.args} did not exit successfully. {results.returncode}\n{results.stdout}\n{results.stderr}')
+            raise AssertionError('\n'.join([
+                f'{results.args} should have exited successfully. {results.returncode} != 0',        
+                results.stdout,
+                results.stderr
+            ]))
         return results
 
 
@@ -96,7 +116,7 @@ class AssertExitFailure:
 
     def __call__(self, results: CompletedProcess) -> CompletedProcess:
         if results.returncode == 0:
-            raise AssertionError(f'{results.args} exited successfully.')
+            raise AssertionError(f'{results.args} should have exited unsuccessfully.')
         return results
 
 
@@ -104,13 +124,12 @@ class AssertValgrindSuccess:
     """ Asserts that there are no valgrind errors reported. """
 
     def __call__(self, results: CompletedProcess) -> CompletedProcess:
-        # TODO: add --exit-on-first-error=yes when valgrind --version>=3.14
         if type(results.args) is list:
             results = Run(
-                ['valgrind', '-q', '--error-exitcode=1', *results.args])()
+                ['valgrind', '-q', '--error-exitcode=1', '--exit-on-first-error=yes', *results.args])()
         elif type(results.args) is str:
             results = Run(
-                f'valgrind -q --error-exitcode=1 {results.args}', shell=True)()
+                f'valgrind -q --error-exitcode=1 --exit-on-first-error=yes {results.args}', shell=True)()
         results = AssertExitSuccess()(results)
         return results
 
@@ -149,7 +168,7 @@ class AssertStdoutMatches:
 
         if results.stdout.strip() != self.stdout.strip():
             raise AssertionError(
-                f'{results.args} stdout does not match expected. {results.stdout}')
+                f'{results.args} stdout does not match expected.\n{self.stdout.strip()} !=\n{results.stdout.strip()}')
 
         return results
 
@@ -189,8 +208,32 @@ class AssertStderrMatches:
 
         if results.stderr.strip() != self.stderr.strip():
             raise AssertionError(
-                f'{results.args} stderr does not match expected.')
+                f'{results.args} stderr does not match expected.\n{self.stderr.strip()} !=\n{results.stderr.strip()}')
 
+        return results
+
+
+class AssertRegexStdout:
+    """ Asserts programs' stdout contains the regex pattern provided.
+    """
+    def __init__(self, pattern: str):
+        self.pattern: re.Pattern = re.compile(pattern)
+
+    def __call__(self, results: CompletedProcess) -> CompletedProcess:
+        if not self.pattern.search(results.stdout):
+            raise AssertionError(f'{self.pattern.pattern} not found in {results.stdout}')
+        return results
+
+
+class AssertRegexStderr:
+    """ Asserts programs' stderr contains the regex pattern provided.
+    """
+    def __init__(self, pattern: str):
+        self.pattern: re.Pattern = re.compile(pattern)
+
+    def __call__(self, results: CompletedProcess) -> CompletedProcess:
+        if not self.pattern.search(results.stderr):
+            raise AssertionError(f'{self.pattern.pattern} not found in {results.stderr}')
         return results
 
 
@@ -233,8 +276,10 @@ class Run:
     def __call__(self, results: CompletedProcess = None) -> CompletedProcess:
         if callable(self.input):
             self.input = self.input(results)
-
-        return self._run(self.command, input=self.input, **self.kwargs)
+        try:
+            return self._run(self.command, input=self.input, **self.kwargs)
+        except TimeoutExpired:
+            raise TimeoutError(f'{self.command} timed out.')
 
 
 class Lambda:
@@ -245,8 +290,6 @@ class Lambda:
 
     def __call__(self, results: CompletedProcess) -> CompletedProcess:
         results = self.function(results)
-        if type(results) is not CompletedProcess:
-            raise TypeError('Lambda did not return CompletedProcess.')
         return results
 
 
@@ -270,6 +313,27 @@ class WriteStdout:
         return results
 
 
+class Check:
+    """ Prevents raising exceptions, alters returncode instead.
+
+    Wrap any assertion in this to make it a "check" instead of an
+    assert. Check does not raise an exception, but rather alters the
+    returncode to match what the assertion would have done.
+    """
+    def __init__(self, callback: Callback):
+        self.callback = callback
+
+    def __call__(self, results: CompletedProcess) -> CompletedProcess:
+        try:
+            self.callback(results)
+        except AssertionError:
+            results.returncode += 1
+            results.stdout.write(f'Check Failed!\n{self.callback} raised an exception!')
+        else:
+            results.returncode = 0
+        finally:
+            return results
+
 class WriteStderr:
     """ Writes the current stderr to the given file.
 
@@ -286,7 +350,7 @@ class WriteStderr:
 
         with open(self.filepath, 'w') as f:
             f.write(results.stderr)
-
+        
         return results
 
 

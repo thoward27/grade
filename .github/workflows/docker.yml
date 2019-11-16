@@ -1,0 +1,28 @@
+name: Docker
+
+on: [push]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v1
+    - name: Build
+      run: docker build --no-cache -t grade .
+    
+    - name: Unit Tests
+      run: docker run grade
+
+    - name: Generate Coverage Report
+      run: |
+        docker run --name coverage grade /bin/bash -c "python -m coverage run -m unittest discover && python -m coverage xml -i"
+        docker cp coverage:/app/coverage.xml .
+    
+    - name: Upload coverage
+      if: success()
+      run: bash <(curl -s https://codecov.io/bash) -t $TOKEN -B $REF
+      env:
+        TOKEN: "${{ secrets.CODECOV_TOKEN }}"
+        REF: "${{ github.ref }}"
