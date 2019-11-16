@@ -1,6 +1,5 @@
 """ Mixins.
 """
-import re
 import os
 from glob import glob
 from inspect import stack
