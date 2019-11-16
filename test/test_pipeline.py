@@ -96,6 +96,23 @@ class TestAsserts(unittest.TestCase):
         AssertValgrindSuccess()(results)
         return
 
+
+class TestAssertContains(unittest.TestCase):
+    def test_stdout_contains(self):
+        results = Run(['ls'])()
+        AssertStdoutContains(['README.md', 'setup.py'])(results)
+        
+        with self.assertRaises(AssertionError):
+            AssertStdoutContains(['pickleRick'])(results)
+    
+    def test_stderr_contains(self):
+        results = Run('>&2 echo hello', shell=True)()
+        AssertStderrContains(['hello'])(results)
+
+        with self.assertRaises(AssertionError):
+            AssertStderrContains(['world'])(results)
+        
+
 class TestAssertStdoutMatches(unittest.TestCase):
 
     def test_stdout_no_match(self):

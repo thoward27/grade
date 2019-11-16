@@ -237,6 +237,29 @@ class AssertRegexStderr:
         return results
 
 
+class AssertStdoutContains:
+    """ Asserts programs' stdout contains the string(s) provided.
+    """
+    def __init__(self, strings: List[str]):
+        self.strings = strings
+
+    def __call__(self, results: CompletedProcess) -> CompletedProcess:
+        if not all([s in results.stdout for s in self.strings]):
+            raise AssertionError(f'One or more of {self.strings} not in {results.stdout}')
+        return results
+
+class AssertStderrContains:
+    """ Assert programs' stderr contains the string(s) provided.
+    """
+    def __init__(self, strings: List[str]):
+        self.strings = strings
+
+    def __call__(self, results: CompletedProcess) -> CompletedProcess:
+        if not all([s in results.stderr for s in self.strings]):
+            raise AssertionError(f'One or more of {self.strings} not in {results.stderr}')
+        return results
+
+
 class Run:
     """ Runs the given command. 
 
