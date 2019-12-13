@@ -2,8 +2,8 @@
 """
 
 import os
-import unittest
 import shutil
+import unittest
 
 from grade.pipeline import *
 
@@ -58,7 +58,7 @@ class TestPartialCredit(unittest.TestCase):
         pipelines = map(lambda t: Pipeline(Run([t]), AssertExitSuccess()), ['ls', 'void'])
         with self.assertLogs() as logs:
             results = PartialCredit(pipelines, 10)()
-        self.assertIn("ERROR:root:[Errno 2] No such file or directory: 'void'", logs.output[0])
+        self.assertIn("ERROR:root:", logs.output[0])
         self.assertEqual(results.score, 5)
         return
 
@@ -259,7 +259,6 @@ class TestRun(unittest.TestCase):
         return
 
     def test_timeout(self):
-        import subprocess
         with self.assertRaises(TimeoutError):
             Run(['sleep', '30'], timeout=1)()
         return

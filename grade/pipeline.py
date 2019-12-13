@@ -95,7 +95,7 @@ class PartialCredit:
                 logging.exception(e, exc_info=False)
             else:
                 self._score += self.value[0]
-                self.value.rotate()
+                self.value.rotate(1)
         return self
 
 
@@ -314,7 +314,7 @@ class Run:
 class Lambda:
     """ Execute arbitrary code in a Pipeline. """
 
-    def __init__(self, function: Callback):
+    def __init__(self, function: Callable[[any], any]):
         self.function = function
 
     def __call__(self, results: CompletedProcess) -> CompletedProcess:
