@@ -31,7 +31,8 @@ class Result(unittest.TextTestResult):
         return '\n\n'.join([
             f"# Grade Results",
             f"## Autograder Score: {self.score}/{self.maxScore}",
-            *[f"### {test['name']} {test['score']}/{test['max_score']}\n\n{test['output'] if 'output' in test else ''}" for test in self.data['tests']]
+            *[f"### {test['name']} {test['score']}/{test['max_score']}\n\n{test['output'] if 'output' in test else ''}" for test
+              in self.data['tests']]
         ])
 
     @property

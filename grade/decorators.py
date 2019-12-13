@@ -4,7 +4,7 @@ Inspired by Gradescope-utils.
 https://github.com/gradescope/gradescope-utils
 """
 
-from functools import wraps, partial, update_wrapper
+from functools import wraps, partial
 
 
 def static(name, value):
@@ -21,23 +21,23 @@ def static(name, value):
 
 weight = partial(static, '__weight__')
 weight.__doc__ = \
-""" Simple decorator to add a __weight__ property to a function
-
-Usage: @weight(3.0)
-"""
+    """ Simple decorator to add a __weight__ property to a function
+    
+    Usage: @weight(3.0)
+    """
 
 visibility = partial(static, '__visibility__')
 visibility.__doc__ = \
-""" Simple decorator to add a __visibility__ property to a function
-
-Usage: @visibility("hidden")
-
-Options for the visibility field are as follows:
-- `hidden`: test case will never be shown to students
-- `after_due_date`: test case will be shown after the assignment's due date has passed
-- `after_published`: test case will be shown only when the assignment is explicitly published
-- `visible` (default): test case will always be shown
-"""
+    """ Simple decorator to add a __visibility__ property to a function
+    
+    Usage: @visibility("hidden")
+    
+    Options for the visibility field are as follows:
+    - `hidden`: test case will never be shown to students
+    - `after_due_date`: test case will be shown after the assignment's due date has passed
+    - `after_published`: test case will be shown only when the assignment is explicitly published
+    - `visible` (default): test case will always be shown
+    """
 
 
 def leaderboard(name=None, order='desc'):
@@ -75,6 +75,7 @@ def leaderboard(name=None, order='desc'):
         def wrapper(*args, **kwargs):
             kwargs['set_leaderboard_score'] = set_score
             return func(*args, **kwargs)
-    
+
         return wrapper
+
     return decorate
