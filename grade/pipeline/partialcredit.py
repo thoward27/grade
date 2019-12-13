@@ -2,7 +2,7 @@ import logging
 from collections import deque
 from typing import Iterator, Union, List
 
-from grade.pipeline import Pipeline
+from .pipeline import Pipeline
 
 
 class PartialCredit:

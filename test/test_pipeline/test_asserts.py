@@ -1,78 +1,8 @@
-""" Tests for the pipeline module.
-"""
-
 import os
 import shutil
 import unittest
 
 from grade.pipeline import *
-from grade.pipeline import Run, Check
-from grade.pipeline.partialcredit import PartialCredit
-from grade.pipeline.write import WriteStdout, WriteStderr, WriteOutputs
-
-
-class TestPipeline(unittest.TestCase):
-
-    def test_fails(self):
-        with self.assertRaises(AssertionError):
-            Pipeline(
-                Run(['ls']),
-                AssertExitFailure()
-            )()
-
-    def test_fail_multiple(self):
-        with self.assertRaises(AssertionError):
-            tests = map(lambda t: Pipeline(Run(['ls']), AssertExitFailure()), range(10))
-            [test() for test in tests]
-
-    def test_passes(self):
-        Pipeline(
-            Run(['ls']),
-            AssertExitSuccess()
-        )
-        return
-
-    def test_pass_multiple(self):
-        tests = map(lambda t: Pipeline(Run(['ls']), AssertExitSuccess()), range(10))
-        [test() for test in tests]
-
-    def test_iteration(self):
-        pipeline = Pipeline(
-            Run(['ls']),
-            AssertExitSuccess(),
-            AssertValgrindSuccess(),
-            WriteOutputs('temp'),
-        )
-        [self.assertTrue(callable(callback)) for callback in pipeline]
-        self.assertIsInstance(pipeline[1], AssertExitSuccess)
-        self.assertEqual(len(pipeline), 4)
-        return
-
-
-class TestPartialCredit(unittest.TestCase):
-
-    def test_full_credit(self):
-        pipelines = map(lambda t: Pipeline(Run(['ls'])), range(10))
-        results = PartialCredit(pipelines, 10)()
-        self.assertEqual(results.score, 10)
-        return
-
-    def test_partial_credit(self):
-        pipelines = map(lambda t: Pipeline(Run([t]), AssertExitSuccess()), ['ls', 'void'])
-        with self.assertLogs() as logs:
-            results = PartialCredit(pipelines, 10)()
-        self.assertIn("ERROR:root:", logs.output[0])
-        self.assertEqual(results.score, 5)
-        return
-
-    def test_no_credit(self):
-        pipelines = map(lambda t: Pipeline(Run(['ls']), AssertExitFailure()), range(10))
-        with self.assertLogs() as logs:
-            results = PartialCredit(pipelines, 10)()
-        self.assertEqual(10, len(logs.output))
-        self.assertIn("ERROR:root:['ls'] should have exited unsuccessfully.", logs.output)
-        self.assertEqual(results.score, 0)
-        return
 
 
 class TestAsserts(unittest.TestCase):
@@ -244,45 +174,6 @@ class TestAssertRegex(unittest.TestCase):
         return
 
 
-class TestRun(unittest.TestCase):
-
-    def test_valid_program(self):
-        results = Run(['ls'])()
-        self.assertEqual(results.returncode, 0)
-        return
-
-    def test_nonexistant(self):
-        with self.assertRaises(FileNotFoundError):
-            Run(['idonotexist'])()
-        return
-
-    def test_shell_command(self):
-        results = Run('echo test | grep test', shell=True)()
-        self.assertEqual(results.returncode, 0)
-        return
-
-    def test_timeout(self):
-        with self.assertRaises(TimeoutError):
-            Run(['sleep', '30'], timeout=1)()
-        return
-
-    def test_input(self):
-        Pipeline(
-            Run(['cat', 'README.md']),
-            AssertExitSuccess(),
-            Run(['grep', 'Setup'], input=lambda r: r.stdout),
-            AssertStdoutMatches('## Setup')
-        )()
-        Pipeline(
-            Run(['grep', 'hello', '-'], input="hello world\nhear me test things!"),
-            AssertStdoutMatches('hello world')
-        )()
-        Pipeline(
-            Run(['python', '-c', 'x = input(); print(x)'], input='5'),
-            AssertStdoutMatches('5')
-        )()
-
-
 class TestCheck(unittest.TestCase):
     """ Tests the Check command. """
 
@@ -305,69 +196,4 @@ class TestCheck(unittest.TestCase):
         results = Run(['grep', '--notanarg'])()
         results = Check(AssertExitSuccess())(results)
         self.assertNotEqual(results.returncode, 0)
-        return
-
-
-class TestWrite(unittest.TestCase):
-    """ Testing commands that write output. """
-
-    def test_stdout(self):
-        results = Run(['echo', 'hello'])()
-        results = WriteStdout()(results)
-
-        with self.assertRaises(FileExistsError):
-            WriteStdout(overwrite=False)(results)
-
-        self.assertIsInstance(results, CompletedProcess)
-        with open('temp', 'r') as f:
-            self.assertEqual(results.stdout, f.read())
-        os.remove('temp')
-        return
-
-    def test_stderr(self):
-        results = Run('>&2 echo error', shell=True)()
-        results = WriteStderr()(results)
-
-        with self.assertRaises(FileExistsError):
-            WriteStderr(overwrite=False)(results)
-
-        self.assertIsInstance(results, CompletedProcess)
-        with open('temp', 'r') as f:
-            self.assertEqual(results.stderr, f.read())
-        os.remove('temp')
-        return
-
-    def test_outputs(self):
-        results = Run(['ls'])()
-        WriteOutputs('temp')(results)
-
-        with open('temp.stdout', 'r') as f:
-            self.assertEqual(results.stdout, f.read())
-        os.remove('temp.stdout')
-
-        with open('temp.stderr', 'r') as f:
-            self.assertEqual(results.stderr, f.read())
-        os.remove('temp.stderr')
-        return
-
-
-class TestLambda(unittest.TestCase):
-
-    def test_simple(self):
-        """ Lambda that does return completedprocess. """
-        results = Run(['ls'])()
-        results = Lambda(lambda r: r)(results)
-        self.assertIsInstance(results, CompletedProcess)
-        return
-
-    @staticmethod
-    def randomFunction(results):
-        """ Function for the test below. """
-        return results
-
-    def test_passing_function(self):
-        """ Lambda that executes a function. """
-        results = Run(['ls'])()
-        results = Lambda(self.randomFunction)(results)
-        self.assertIsInstance(results, CompletedProcess)
         return

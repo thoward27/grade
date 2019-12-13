@@ -1,3 +1,4 @@
+import time
 from functools import partial
 from subprocess import run, PIPE, CompletedProcess, TimeoutExpired
 
@@ -37,11 +38,17 @@ class Run:
         self.command = command
         self.input = input
         self.kwargs = kwargs
+        return
 
     def __call__(self, results: CompletedProcess = None) -> CompletedProcess:
         if callable(self.input):
             self.input = self.input(results)
         try:
-            return self._run(self.command, input=self.input, **self.kwargs)
+            start = time.time()
+            results: CompletedProcess = self._run(self.command, input=self.input, **self.kwargs)
+            duration = time.time() - start
         except TimeoutExpired:
             raise TimeoutError(f'{self.command} timed out.')
+        else:
+            results.time = duration
+            return results
