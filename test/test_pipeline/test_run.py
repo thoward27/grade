@@ -8,6 +8,7 @@ class TestRun(unittest.TestCase):
     def test_valid_program(self):
         results = Run(['ls'])()
         self.assertEqual(results.returncode, 0)
+        self.assertGreater(results.duration, 0)
         return
 
     def test_nonexistant(self):
@@ -18,6 +19,7 @@ class TestRun(unittest.TestCase):
     def test_shell_command(self):
         results = Run('echo test | grep test', shell=True)()
         self.assertEqual(results.returncode, 0)
+        self.assertGreater(results.duration, 0)
         return
 
     def test_timeout(self):

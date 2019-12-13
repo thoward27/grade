@@ -1,5 +1,6 @@
 from os import path
-from subprocess import CompletedProcess
+
+from .completedprocess import CompletedProcess
 
 
 class WriteStdout:

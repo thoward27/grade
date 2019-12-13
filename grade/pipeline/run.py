@@ -1,6 +1,8 @@
 import time
 from functools import partial
-from subprocess import run, PIPE, CompletedProcess, TimeoutExpired
+from subprocess import run, PIPE, TimeoutExpired
+
+from .completedprocess import CompletedProcess
 
 
 class Run:
@@ -34,6 +36,10 @@ class Run:
         errors='ignore'
     )
 
+    def run(self, command, **kwargs):
+        results = self._run(command, **kwargs)
+        return CompletedProcess(results)
+
     def __init__(self, command, input=None, **kwargs):
         self.command = command
         self.input = input
@@ -45,10 +51,10 @@ class Run:
             self.input = self.input(results)
         try:
             start = time.time()
-            results: CompletedProcess = self._run(self.command, input=self.input, **self.kwargs)
+            results: CompletedProcess = self.run(self.command, input=self.input, **self.kwargs)
             duration = time.time() - start
         except TimeoutExpired:
             raise TimeoutError(f'{self.command} timed out.')
         else:
-            results.time = duration
+            results.duration = duration
             return results

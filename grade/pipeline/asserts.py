@@ -1,8 +1,8 @@
 import re
 from os import path
-from subprocess import CompletedProcess
 from typing import List, Pattern
 
+from .completedprocess import CompletedProcess
 from .pipeline import Callback
 from .run import Run
 

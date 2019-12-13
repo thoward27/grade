@@ -4,8 +4,9 @@ Pipeline components allow you chain together tests
 for executable files within a few lines, without the
 headaches of typical executable testing.
 """
-from subprocess import CompletedProcess
 from typing import Callable
+
+from .completedprocess import CompletedProcess
 
 Callback = Callable[[CompletedProcess], CompletedProcess]
 
