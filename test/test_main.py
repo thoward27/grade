@@ -3,6 +3,7 @@ import sys
 import unittest
 
 from grade.pipeline import *
+from grade.pipeline import Run
 
 PYTHON = sys.executable
 

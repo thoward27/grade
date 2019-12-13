@@ -83,19 +83,19 @@ class TestRunner(unittest.TestCase):
     def test_json_successful(self):
         suite = unittest.TestLoader().loadTestsFromTestCase(self.TestPassing)
         results = GradedRunner().run(suite)
-        results = json.loads(results.json)  
+        results = json.loads(results.json)
 
         self.assertIn('tests', results)
         self.assertEqual(5, len(results['tests']))
         self.assertEqual(15, sum([test['score'] for test in results['tests']]))
         self.assertTrue(all(['output' in test for test in results['tests']]))
-        
+
         self.assertIn('leaderboard', results)
         self.assertEqual(2, len(results['leaderboard']))
 
         self.assertIn('visibility', results)
-        
-        self.assertIn('execution_time', results)        
+
+        self.assertIn('execution_time', results)
         return
 
     def test_markdown_successful(self):
@@ -124,15 +124,15 @@ class TestRunner(unittest.TestCase):
         self.assertEqual(1, len(results['tests']))
 
         self.assertIn('leaderboard', results)
-        self.assertEqual(0, len(results['leaderboard'])) 
+        self.assertEqual(0, len(results['leaderboard']))
 
         self.assertIn('visibility', results)
-        
+
         self.assertIn('execution_time', results)
         return
 
-class TestClassSetupFails(unittest.TestCase):
 
+class TestClassSetupFails(unittest.TestCase):
     class Test(ScoringMixin, unittest.TestCase):
 
         @classmethod

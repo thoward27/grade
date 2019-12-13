@@ -1,10 +1,12 @@
 """ Grade Example Flow.
 """
-import os
 import unittest
 
-from grade import pipeline, mixins, decorators, runners
-from grade.pipeline import Pipeline, Run, AssertExitSuccess, PartialCredit, AssertValgrindSuccess
+import grade.pipeline.run
+from grade import mixins, decorators, runners
+from grade.pipeline import Pipeline, Run
+from grade.pipeline.asserts import AssertExitSuccess, AssertValgrindSuccess
+from grade.pipeline.partialcredit import PartialCredit
 
 
 def student_function(x: list, m: int) -> list:
@@ -30,7 +32,7 @@ class Tests(mixins.ScoringMixin, unittest.TestCase):
         If anything in this block fails, the student should receive a 0.
         """
         # Compilation
-        compile = pipeline.Run(['ls'])()
+        compile = grade.pipeline.run.Run(['ls'])()
         assert(compile.returncode == 0)
 
         # Requiring files.

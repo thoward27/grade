@@ -6,6 +6,9 @@ import shutil
 import unittest
 
 from grade.pipeline import *
+from grade.pipeline import Run, Check
+from grade.pipeline.partialcredit import PartialCredit
+from grade.pipeline.write import WriteStdout, WriteStderr, WriteOutputs
 
 
 class TestPipeline(unittest.TestCase):
@@ -101,17 +104,17 @@ class TestAssertContains(unittest.TestCase):
     def test_stdout_contains(self):
         results = Run(['ls'])()
         AssertStdoutContains(['README.md', 'setup.py'])(results)
-        
+
         with self.assertRaises(AssertionError):
             AssertStdoutContains(['pickleRick'])(results)
-    
+
     def test_stderr_contains(self):
         results = Run('>&2 echo hello', shell=True)()
         AssertStderrContains(['hello'])(results)
 
         with self.assertRaises(AssertionError):
             AssertStderrContains(['world'])(results)
-        
+
 
 class TestAssertStdoutMatches(unittest.TestCase):
 
@@ -169,6 +172,7 @@ class TestAssertStdoutMatches(unittest.TestCase):
         os.remove('hello.stdout')
         return
 
+
 class TestAssertStderrMatches(unittest.TestCase):
 
     def test_stderr_no_match(self):
@@ -183,7 +187,7 @@ class TestAssertStderrMatches(unittest.TestCase):
         results = Run('>&2 echo hello_world', shell=True)()
         results = AssertStderrMatches('hello_world')(results)
         self.assertIsInstance(results, CompletedProcess)
-    
+
     def test_inferring_filename(self):
         """ Can we infer filename if conventions are followed? """
         results = Run(['grep', '-h'])()
@@ -192,7 +196,7 @@ class TestAssertStderrMatches(unittest.TestCase):
         self.assertIsInstance(results, CompletedProcess)
         os.remove('-h.stdout')
         os.remove('-h.stderr')
-    
+
     def test_cannot_infer_filename(self):
         """ What if there is no file to infer from? """
         results = Run(['grep', '-h'])()
@@ -220,7 +224,7 @@ class TestAssertStderrMatches(unittest.TestCase):
         AssertStderrMatches(filepath='hello.stderr')(results)
         os.remove('hello.stderr')
         return
-        
+
 
 class TestAssertRegex(unittest.TestCase):
     def test_regex_stdout(self):
@@ -238,7 +242,6 @@ class TestAssertRegex(unittest.TestCase):
         with self.assertRaises(AssertionError):
             AssertRegexStderr(f'bah humbug')(results)
         return
-
 
 
 class TestRun(unittest.TestCase):
@@ -282,6 +285,7 @@ class TestRun(unittest.TestCase):
 
 class TestCheck(unittest.TestCase):
     """ Tests the Check command. """
+
     def test_check_successful(self):
         """ Check should not change a successful execution by asserting exit success. """
         results = Run(['ls'])()
@@ -310,7 +314,7 @@ class TestWrite(unittest.TestCase):
     def test_stdout(self):
         results = Run(['echo', 'hello'])()
         results = WriteStdout()(results)
-        
+
         with self.assertRaises(FileExistsError):
             WriteStdout(overwrite=False)(results)
 
