@@ -4,10 +4,10 @@ Pipeline components allow you chain together tests
 for executable files within a few lines, without the
 headaches of typical executable testing.
 """
-from collections import deque
 import logging
-from functools import partial
 import re
+from collections import deque
+from functools import partial
 from os import path
 from subprocess import run, PIPE, CompletedProcess, TimeoutExpired
 from typing import Callable, Iterator, List, Union
@@ -71,10 +71,11 @@ class PartialCredit:
     :param pipelines: an iterator of Pipeline objects.
     :param value: total value for the pipeline; either an int, or a list of ints (accessed via modulo arithmetic).
     """
+
     def __init__(self, pipelines: Iterator[Pipeline], value: Union[int, List[int]]):
         self.pipelines = list(pipelines)
         self.max_score = value
-        
+
         self.value = deque(value if type(value) is list else [value / len(self.pipelines)])
         self._score = 0
         self._executed = False
@@ -104,7 +105,7 @@ class AssertExitSuccess:
     def __call__(self, results: CompletedProcess) -> CompletedProcess:
         if results.returncode != 0:
             raise AssertionError('\n'.join([
-                f'{results.args} should have exited successfully. {results.returncode} != 0',        
+                f'{results.args} should have exited successfully. {results.returncode} != 0',
                 results.stdout,
                 results.stderr
             ]))
@@ -216,6 +217,7 @@ class AssertStderrMatches:
 class AssertRegexStdout:
     """ Asserts programs' stdout contains the regex pattern provided.
     """
+
     def __init__(self, pattern: str):
         self.pattern: re.Pattern = re.compile(pattern)
 
@@ -228,6 +230,7 @@ class AssertRegexStdout:
 class AssertRegexStderr:
     """ Asserts programs' stderr contains the regex pattern provided.
     """
+
     def __init__(self, pattern: str):
         self.pattern: re.Pattern = re.compile(pattern)
 
@@ -240,6 +243,7 @@ class AssertRegexStderr:
 class AssertStdoutContains:
     """ Asserts programs' stdout contains the string(s) provided.
     """
+
     def __init__(self, strings: List[str]):
         self.strings = strings
 
@@ -248,9 +252,11 @@ class AssertStdoutContains:
             raise AssertionError(f'One or more of {self.strings} not in {results.stdout}')
         return results
 
+
 class AssertStderrContains:
     """ Assert programs' stderr contains the string(s) provided.
     """
+
     def __init__(self, strings: List[str]):
         self.strings = strings
 
@@ -343,6 +349,7 @@ class Check:
     assert. Check does not raise an exception, but rather alters the
     returncode to match what the assertion would have done.
     """
+
     def __init__(self, callback: Callback):
         self.callback = callback
 
@@ -356,6 +363,7 @@ class Check:
             results.returncode = 0
         finally:
             return results
+
 
 class WriteStderr:
     """ Writes the current stderr to the given file.
@@ -373,7 +381,7 @@ class WriteStderr:
 
         with open(self.filepath, 'w') as f:
             f.write(results.stderr)
-        
+
         return results
 
 

@@ -1,5 +1,3 @@
-import sys
-
 import click
 
 GRADES = {}
@@ -50,6 +48,7 @@ def markdown(output):
     output.write('\n\n'.join([
         f"# Grade Results",
         f"## Autograder Score: {'/'.join(map(str, score()))}",
-        *[f"### {test['name']} {test['score']}/{test['max_score']}\n\n{test['output'] if 'output' in test else ''}" for test in GRADES['tests']]
+        *[f"### {test['name']} {test['score']}/{test['max_score']}\n\n{test['output'] if 'output' in test else ''}" for test in
+          GRADES['tests']]
     ]))
     return

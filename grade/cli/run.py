@@ -1,9 +1,10 @@
+import json
 import unittest
 
 import click
 
 from grade.runners import GradedRunner
-import json
+
 
 @click.command()
 @click.option('--batch/--single', default=False)
