@@ -5,6 +5,7 @@ from typing import Union
 class CompletedProcess:
     def __init__(self, process: Subprocess):
         self.process: Subprocess = process
+        # TODO: Duration should be a stack of durations for each run call.
         self.duration: Union[float, None] = None
         return
 

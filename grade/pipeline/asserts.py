@@ -30,6 +30,54 @@ class Check:
             return results
 
 
+class Not:
+    # TODO: Document & Test
+    def __init__(self, callback: Callback):
+        # TODO: Assert this isn't a Run?
+        self.callback = callback
+        return
+
+    def __call__(self, results: CompletedProcess) -> CompletedProcess:
+        try:
+            results = self.callback(results)
+        except Exception:
+            return results
+        else:
+            raise AssertionError(f'{self.callback} passed!')
+
+
+class Or:
+    # TODO: Document & Test
+    def __init__(self, *callbacks):
+        self.callbacks = callbacks
+        return
+
+    def __call__(self, results: CompletedProcess) -> CompletedProcess:
+        for callback in self.callbacks:
+            try:
+                results = callback(results)
+            except Exception:
+                pass
+            else:
+                return results
+        else:
+            # TODO: Does this print right?
+            raise AssertionError(f'None of the callbacks passed! [{[str(c) for c in self.callbacks]}]')
+
+
+class AssertFaster:
+    # TODO: Document & Test
+    def __init__(self, duration):
+        self.duration = duration
+        return
+
+    def __call__(self, results: CompletedProcess) -> CompletedProcess:
+        # TODO: >= or >?
+        if results.duration > self.duration:
+            raise AssertionError(f'{results.args} took longer than {self.duration}')
+        return results
+
+
 class AssertExitSuccess:
     """ Asserts that the CompletedProcess exited successfully. """
 
@@ -49,6 +97,18 @@ class AssertExitFailure:
     def __call__(self, results: CompletedProcess) -> CompletedProcess:
         if results.returncode == 0:
             raise AssertionError(f'{results.args} should have exited unsuccessfully.')
+        return results
+
+
+class AssertExitStatus:
+    # TODO: Document and test.
+    def __init__(self, returncode: int):
+        self.returncode = returncode
+        return
+
+    def __call__(self, results: CompletedProcess) -> CompletedProcess:
+        if results.returncode != self.returncode:
+            raise AssertionError(f'{results.args} return {results.returncode}, expected {self.returncode}')
         return results
 
 
@@ -145,7 +205,7 @@ class AssertStderrMatches:
         return results
 
 
-class AssertRegexStdout:
+class AssertStdoutRegex:
     """ Asserts programs' stdout contains the regex pattern provided.
     """
 
@@ -158,7 +218,7 @@ class AssertRegexStdout:
         return results
 
 
-class AssertRegexStderr:
+class AssertStderrRegex:
     """ Asserts programs' stderr contains the regex pattern provided.
     """
 

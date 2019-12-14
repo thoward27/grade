@@ -2,7 +2,7 @@ from .asserts import \
     Check, \
     AssertExitSuccess, AssertExitFailure, \
     AssertStderrMatches, AssertStdoutMatches, \
-    AssertRegexStderr, AssertRegexStdout, \
+    AssertStderrRegex, AssertStdoutRegex, \
     AssertStderrContains, AssertStdoutContains, \
     AssertValgrindSuccess
 from .completedprocess import CompletedProcess

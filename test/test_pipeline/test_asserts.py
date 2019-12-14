@@ -159,18 +159,18 @@ class TestAssertStderrMatches(unittest.TestCase):
 class TestAssertRegex(unittest.TestCase):
     def test_regex_stdout(self):
         results = Run(['cat', 'README.md'])()
-        results = AssertRegexStdout(r'python')(results)
+        results = AssertStdoutRegex(r'python')(results)
         self.assertIsInstance(results, CompletedProcess)
         with self.assertRaises(AssertionError) as e:
-            AssertRegexStdout(r'idontthinkthisshouldbehere')(results)
+            AssertStdoutRegex(r'idontthinkthisshouldbehere')(results)
         return
 
     def test_regex_stderr(self):
         results = Run('>&2 echo hello_world', shell=True)()
-        results = AssertRegexStderr(r'hello')(results)
+        results = AssertStderrRegex(r'hello')(results)
         self.assertIsInstance(results, CompletedProcess)
         with self.assertRaises(AssertionError):
-            AssertRegexStderr(f'bah humbug')(results)
+            AssertStderrRegex(f'bah humbug')(results)
         return
 
 
