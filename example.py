@@ -53,7 +53,7 @@ class Tests(mixins.ScoringMixin, unittest.TestCase):
     # For most grading functions, we provide both methods and decorators.
     # There is no functional difference between methods and decorators.
 
-    @decorators.weight(10) # Equivalent to self.weight = 10
+    @decorators.weight(10)  # Equivalent to self.weight = 10
     def test_student_function(self):
         """ Test the students python code on some inputs.
         """
