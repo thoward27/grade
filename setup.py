@@ -1,4 +1,4 @@
-from setuptools import setup
+from setuptools import setup, find_packages
 
 with open('README.md', 'r') as f:
     long_description = f.read()
@@ -7,7 +7,7 @@ setup(
     name='grade',
     use_scm_version=True,
     setup_requires=['setuptools_scm'],
-    packages=['grade'],
+    packages=find_packages('.', exclude=('test',)),
     url='https://github.com/thoward27/grade',
     license='AGPL',
     author='Tom Howard',
