@@ -1,12 +1,12 @@
 from setuptools import setup
-import grade
 
 with open('README.md', 'r') as f:
     long_description = f.read()
 
 setup(
     name='grade',
-    version=grade.__version__,
+    use_scm_version=True,
+    setup_requires=['setuptools_scm'],
     packages=['grade'],
     url='https://github.com/thoward27/grade',
     license='AGPL',
@@ -16,4 +16,5 @@ setup(
     long_description=long_description,
     long_description_content_type='text/markdown',
     python_requires='>=3.6',
+    install_requires=['Click']
 )

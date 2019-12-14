@@ -12,6 +12,7 @@
 #
 import os
 import sys
+from pkg_resources import get_distribution
 sys.path.insert(0, os.path.abspath('..'))
 import grade
 
@@ -23,7 +24,8 @@ copyright = '2019, Tom Howard'
 author = 'Tom Howard'
 
 # The full version, including alpha/beta/rc tags
-release = grade.__version__
+release = get_distribution('grade').version
+version = '.'.join(release.split('.')[:2])
 
 
 # -- General configuration ---------------------------------------------------
