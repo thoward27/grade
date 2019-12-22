@@ -24,8 +24,9 @@ copyright = '2019, Tom Howard'
 author = 'Tom Howard'
 
 # The full version, including alpha/beta/rc tags
+# TODO: put this back in try/except
+release = get_distribution('grade').version
 try:
-    release = get_distribution('grade').version
     version = '.'.join(release.split('.')[:2])
 except DistributionNotFound:
     pass
