@@ -12,9 +12,10 @@
 #
 import os
 import sys
-sys.path.insert(0, os.path.abspath('..'))
-import grade
 
+from pkg_resources import get_distribution, DistributionNotFound
+
+sys.path.insert(0, os.path.abspath('..'))
 
 # -- Project information -----------------------------------------------------
 
@@ -23,8 +24,11 @@ copyright = '2019, Tom Howard'
 author = 'Tom Howard'
 
 # The full version, including alpha/beta/rc tags
-release = grade.__version__
-
+try:
+    release = get_distribution('grade').version
+    version = '.'.join(release.split('.')[:2])
+except DistributionNotFound:
+    pass
 
 # -- General configuration ---------------------------------------------------
 
@@ -45,7 +49,6 @@ templates_path = ['_templates']
 # directories to ignore when looking for source files.
 # This pattern also affects html_static_path and html_extra_path.
 exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
-
 
 # -- Options for HTML output -------------------------------------------------
 

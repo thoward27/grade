@@ -18,8 +18,8 @@ RUN apt-get install -y \
 # Install grade
 RUN mkdir /app/
 COPY . /app/
-RUN python -m pip install -r /app/requirements.txt
 RUN python -m pip install /app/
+RUN python -m pip install -r /app/requirements.txt
 
 # Defaults
 WORKDIR /app/

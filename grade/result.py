@@ -31,7 +31,8 @@ class Result(unittest.TextTestResult):
         return '\n\n'.join([
             f"# Grade Results",
             f"## Autograder Score: {self.score}/{self.maxScore}",
-            *[f"### {test['name']} {test['score']}/{test['max_score']}\n\n{test['output'] if 'output' in test else ''}" for test in self.data['tests']]
+            *[f"### {test['name']} {test['score']}/{test['max_score']}\n\n{test['output'] if 'output' in test else ''}" for test
+              in self.data['tests']]
         ])
 
     @property
@@ -60,7 +61,9 @@ class Result(unittest.TextTestResult):
 
     def getName(self, test):
         name = self.getattr(test, '__qualname__')
-        if description := test.shortDescription():
+        # TODO: Walrus once python 3.8 is supported.
+        description = test.shortDescription()
+        if description:
             name = f'{name}: {description}'
         return name
 
@@ -87,9 +90,12 @@ class Result(unittest.TextTestResult):
             'max_score': self.getattr(test, '__weight__', 0),
             'score': self.getScore(test),
         }
-        if exceptions := self.getExceptions(test):
+        # TODO: Walrus, won't need to calculate outputs if exceptions work.
+        exceptions = self.getExceptions(test)
+        outputs = (self._stdout_buffer.getvalue() + self._stderr_buffer.getvalue()).strip()
+        if exceptions:
             result['output'] = self.parseExceptions(exceptions)
-        elif outputs := (self._stdout_buffer.getvalue() + self._stderr_buffer.getvalue()).strip():
+        elif outputs:
             result['output'] = outputs
 
         self.data['tests'].append(result)
