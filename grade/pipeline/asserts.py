@@ -1,3 +1,4 @@
+import logging
 import re
 from os import path
 from typing import List, Pattern
@@ -5,6 +6,8 @@ from typing import List, Pattern
 from .completedprocess import CompletedProcess
 from .pipeline import Callback
 from .run import Run
+
+log = logging.getLogger(__file__)
 
 
 class Check:
@@ -30,6 +33,59 @@ class Check:
             return results
 
 
+class Not:
+    """ Negates the enclosed callback.
+
+    If the enclosed callback throws an exception,
+    results are returned successfully.
+    If the enclosed callback does not throw an exception,
+    an assertion error is raised.
+    """
+    def __init__(self, callback: Callback):
+        self.callback = callback
+        return
+
+    def __call__(self, results: CompletedProcess) -> CompletedProcess:
+        try:
+            self.callback(results)
+        except Exception as err:
+            log.debug(err)
+            return results
+        else:
+            raise AssertionError(f'{self.callback} passed!')
+
+
+class Or:
+    """ Ensures that at least one of the callbacks given passes.
+    """
+    def __init__(self, *callbacks):
+        self.callbacks = callbacks
+        return
+
+    def __call__(self, results: CompletedProcess) -> CompletedProcess:
+        for callback in self.callbacks:
+            try:
+                results = callback(results)
+            except Exception as err:
+                log.debug(err)
+            else:
+                return results
+        raise AssertionError(f'None of the callbacks passed! [{[str(c) for c in self.callbacks]}]')
+
+
+class AssertFaster:
+    """ Asserts that the most recent call to Run() was faster than duration.
+    """
+    def __init__(self, duration):
+        self.duration = duration
+        return
+
+    def __call__(self, results: CompletedProcess) -> CompletedProcess:
+        if results.duration > self.duration:
+            raise AssertionError(f'{results.args} took longer than {self.duration}')
+        return results
+
+
 class AssertExitSuccess:
     """ Asserts that the CompletedProcess exited successfully. """
 
@@ -49,6 +105,18 @@ class AssertExitFailure:
     def __call__(self, results: CompletedProcess) -> CompletedProcess:
         if results.returncode == 0:
             raise AssertionError(f'{results.args} should have exited unsuccessfully.')
+        return results
+
+
+class AssertExitStatus:
+    """ Asserts that the program exited with a specific error code."""
+    def __init__(self, returncode: int):
+        self.returncode = returncode
+        return
+
+    def __call__(self, results: CompletedProcess) -> CompletedProcess:
+        if results.returncode != self.returncode:
+            raise AssertionError(f'{results.args} return {results.returncode}, expected {self.returncode}')
         return results
 
 
@@ -145,7 +213,7 @@ class AssertStderrMatches:
         return results
 
 
-class AssertRegexStdout:
+class AssertStdoutRegex:
     """ Asserts programs' stdout contains the regex pattern provided.
     """
 
@@ -158,7 +226,7 @@ class AssertRegexStdout:
         return results
 
 
-class AssertRegexStderr:
+class AssertStderrRegex:
     """ Asserts programs' stderr contains the regex pattern provided.
     """
 
