@@ -61,9 +61,7 @@ class Result(unittest.TextTestResult):
 
     def getName(self, test):
         name = self.getattr(test, '__qualname__')
-        # TODO: Walrus once python 3.8 is supported.
-        description = test.shortDescription()
-        if description:
+        if description := test.shortDescription():
             name = f'{name}: {description}'
         return name
 
@@ -90,12 +88,9 @@ class Result(unittest.TextTestResult):
             'max_score': self.getattr(test, '__weight__', 0),
             'score': self.getScore(test),
         }
-        # TODO: Walrus, won't need to calculate outputs if exceptions work.
-        exceptions = self.getExceptions(test)
-        outputs = (self._stdout_buffer.getvalue() + self._stderr_buffer.getvalue()).strip()
-        if exceptions:
+        if exceptions := self.getExceptions(test):
             result['output'] = self.parseExceptions(exceptions)
-        elif outputs:
+        elif outputs := (self._stdout_buffer.getvalue() + self._stderr_buffer.getvalue()).strip():
             result['output'] = outputs
 
         self.data['tests'].append(result)

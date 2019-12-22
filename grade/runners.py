@@ -31,7 +31,11 @@ class GradedRunner(TextTestRunner):
             # setUpClass failed.
             tests = [m for t in test for m in t.getTests()]
             results.data['tests'] = [
-                {'name': t.__qualname__, 'max_score': 0, 'score': '0', 'output': [f'{e[0]}: {e[1]}' for e in results.errors]} for
-                k, t in tests]
+                {
+                    'name': t.__qualname__,
+                    'max_score': 0,
+                    'score': '0',
+                    'output': [f'{e[0]}: {e[1]}' for e in results.errors]
+                } for k, t in tests]
 
         return results
