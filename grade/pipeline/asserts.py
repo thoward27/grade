@@ -68,7 +68,6 @@ class Or:
                 results = callback(results)
             except Exception as err:
                 log.debug(err)
-                pass
             else:
                 return results
         raise AssertionError(f'None of the callbacks passed! [{[str(c) for c in self.callbacks]}]')
