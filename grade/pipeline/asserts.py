@@ -1,3 +1,4 @@
+import logging
 import re
 from os import path
 from typing import List, Pattern
@@ -5,6 +6,8 @@ from typing import List, Pattern
 from .completedprocess import CompletedProcess
 from .pipeline import Callback
 from .run import Run
+
+log = logging.getLogger(__file__)
 
 
 class Check:
@@ -31,23 +34,30 @@ class Check:
 
 
 class Not:
-    # TODO: Document & Test
+    """ Negates the enclosed callback.
+
+    If the enclosed callback throws an exception,
+    results are returned successfully.
+    If the enclosed callback does not throw an exception,
+    an assertion error is raised.
+    """
     def __init__(self, callback: Callback):
-        # TODO: Assert this isn't a Run?
         self.callback = callback
         return
 
     def __call__(self, results: CompletedProcess) -> CompletedProcess:
         try:
-            results = self.callback(results)
-        except Exception:
+            self.callback(results)
+        except Exception as err:
+            log.debug(err)
             return results
         else:
             raise AssertionError(f'{self.callback} passed!')
 
 
 class Or:
-    # TODO: Document & Test
+    """ Ensures that at least one of the callbacks given passes.
+    """
     def __init__(self, *callbacks):
         self.callbacks = callbacks
         return
@@ -56,23 +66,22 @@ class Or:
         for callback in self.callbacks:
             try:
                 results = callback(results)
-            except Exception:
+            except Exception as err:
+                log.debug(err)
                 pass
             else:
                 return results
-        else:
-            # TODO: Does this print right?
-            raise AssertionError(f'None of the callbacks passed! [{[str(c) for c in self.callbacks]}]')
+        raise AssertionError(f'None of the callbacks passed! [{[str(c) for c in self.callbacks]}]')
 
 
 class AssertFaster:
-    # TODO: Document & Test
+    """ Asserts that the most recent call to Run() was faster than duration.
+    """
     def __init__(self, duration):
         self.duration = duration
         return
 
     def __call__(self, results: CompletedProcess) -> CompletedProcess:
-        # TODO: >= or >?
         if results.duration > self.duration:
             raise AssertionError(f'{results.args} took longer than {self.duration}')
         return results
@@ -101,7 +110,7 @@ class AssertExitFailure:
 
 
 class AssertExitStatus:
-    # TODO: Document and test.
+    """ Asserts that the program exited with a specific error code."""
     def __init__(self, returncode: int):
         self.returncode = returncode
         return
