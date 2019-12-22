@@ -17,6 +17,14 @@ class TestAsserts(unittest.TestCase):
         AssertExitFailure()(results)
         return
 
+    def test_assert_exit_status(self):
+        Pipeline(
+            Run(['echo', 'hello world']),
+            AssertExitStatus(0),
+            Not(AssertExitStatus(1)),
+        )()
+        return
+
     @unittest.skipIf(shutil.which('valgrind') is None, 'Need valgrind.')
     def test_valgrind(self):
         results = Run(['ls'])()
@@ -27,6 +35,44 @@ class TestAsserts(unittest.TestCase):
 
         results = Run('grep pip < README.md', shell=True)()
         AssertValgrindSuccess()(results)
+        return
+
+    def test_not(self):
+        Pipeline(
+            Run(['ls']),
+            # Essentially, assert not contains, which should fail.
+            Not(AssertStdoutContains(strings=['imaginary.file']))
+        )()
+        with self.assertRaises(AssertionError):
+            Pipeline(
+                Run(['echo', 'hello world']),
+                Not(AssertStdoutContains(strings=['hello']))
+            )()
+        return
+
+    def test_or(self):
+        Pipeline(
+            Run(['echo', 'hello world']),
+            Or(
+                AssertStdoutContains(['goodbye']),
+                AssertStdoutContains(['hello'])),
+        )()
+        with self.assertRaises(AssertionError):
+            Pipeline(
+                Run(['echo', 'hello world']),
+                Or(
+                    AssertStdoutContains(['goodbye']),
+                    AssertStderrContains(['goodbye'])
+                )
+            )()
+        return
+
+    def test_faster(self):
+        Pipeline(
+            Run(['echo', 'hello world']),
+            AssertFaster(10),
+            Not(AssertFaster(0)),
+        )()
         return
 
 
