@@ -96,6 +96,8 @@ class TestRunner(unittest.TestCase):
         self.assertIn('visibility', results)
 
         self.assertIn('execution_time', results)
+
+        self.assertIsInstance(results['tests'][0]['output'], str)
         return
 
     def test_markdown_successful(self):
@@ -149,3 +151,5 @@ class TestClassSetupFails(unittest.TestCase):
         results = json.loads(results.json)
 
         self.assertEqual(len(results['tests']), 1)
+        self.assertIsInstance(results['tests'][0]['output'], str)
+        self.assertNotEqual(results['tests'][0]['output'], '')
