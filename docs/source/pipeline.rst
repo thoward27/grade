@@ -2,7 +2,35 @@
 Pipeline
 ==================
 
-.. automodule:: grade.pipeline
+.. toctree::
+    :caption: Pipeline
+
+Pipeline
+==============
+
+.. automodule:: grade.pipeline.pipeline
     :members:
 
-.. TODO: Split this into a page per actual source file.
+Run
+==============
+
+.. automodule:: grade.pipeline.run
+    :members:
+
+Asserts
+============
+
+.. automodule:: grade.pipeline.asserts
+    :members:
+
+Partial Credit
+===================
+
+.. automodule:: grade.pipeline.partialcredit
+    :members:
+
+Write
+==================
+
+.. automodule:: grade.pipeline.write
+    :members:
