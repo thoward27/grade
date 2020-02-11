@@ -86,14 +86,12 @@ portion of the code. With Grade, we can write a testing suite as follows:
                 AssertStdoutMatches('hello'),
             )() # It a students' code passes all of the tests, they get full credit.
 
-To execute this `TestCase`, simply run `python -m grade .`
+To execute this ``TestCase``, simply run ``python -m grade run``
 from the root directory where both files are contained.
 
-The output from running Grade is controlled by output flags,
-the default output is None. To output the grades to JSON, simply run
-`python -m grade . --json`. This is the format you must use when
-working with Gradescope, but you may also use `--markdown`.
-
+Once you have run a given test suite, you can control output from the CLI.
+Simply run ``python -m grade report`` to have the output written to ``stdout``.
+For example, to output to Markdown: ``python -m grade report markdown``.
 
 Further Reading
 =====================
