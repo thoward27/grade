@@ -1,58 +1,56 @@
+"""Result reporting.
+
+This handles the CLI interface for reporting results.
+"""
+
 import click
-
-GRADES = {}
-
-
-def load():
-    with open(".grade", "r") as f:
-        grades = eval(f.read())
-    return grades
+import json
 
 
-def score():
-    # TODO: This should be stored in original output.
-    return (
-        sum(test["score"] for test in GRADES["tests"]),
-        sum(test["max_score"] for test in GRADES["tests"]),
-    )
-
-
-@click.group(invoke_without_command=True)
-@click.pass_context
-def report(ctx):
+@click.command(short_help="writes results to either stdout or an output file")
+@click.option(
+    "--format",
+    type=click.Choice({"json", "markdown", "gradescope"}),
+    default="markdown",
+    help="output format to use",
+)
+@click.option(
+    "--output", type=click.File("w"), default="-", help="optional file to write output to"
+)
+def report(format, output):
     """ Report in the default format to stdout. """
-    global GRADES
-    GRADES = load()
-    if ctx.invoked_subcommand is None:
-        print(str(GRADES))
+    with open(".grade", "r") as fp:
+        grades = json.load(fp)
 
-
-@report.command()
-@click.argument("output", type=click.File("w"), default="-")
-def gradescope(output):
-    json(output)
-
-
-@report.command()
-@click.argument("output", type=click.File("w"), default="-")
-def json(output):
-    import json
-
-    output.write(json.dumps(GRADES, indent=4, sort_keys=True))
-
-
-@report.command()
-@click.argument("output", type=click.File("w"), default="-")
-def markdown(output):
-    output.write(
-        "\n\n".join(
-            [
-                f"# Grade Results",
-                f"## Autograder Score: {'/'.join(map(str, score()))}",
-                *[
-                    f"### {test['name']} {test['score']}/{test['max_score']}\n\n{test['output'] if 'output' in test else ''}"
-                    for test in GRADES["tests"]
-                ],
-            ]
+    if format == "markdown":
+        score, max_score = (
+            sum((t["score"] for t in grades["tests"])),
+            sum((t["max_score"] for t in grades["tests"])),
         )
-    )
+        output.write(
+            "\n\n".join(
+                [
+                    f"# Grade Results",
+                    f"## Autograder Score: {score}/{max_score}",
+                    *[
+                        "\n".join(
+                            [
+                                f"### {test['name']} {test['score']}/{test['max_score']}",
+                                "",
+                                f"{test['output'] if 'output' in test else ''}",
+                            ]
+                        )
+                        for test in grades["tests"]
+                    ],
+                ]
+            )
+        )
+
+    elif format == "gradescope":
+        output.write(json.dumps(grades, indent=4, sort_keys=True))
+
+    elif format == "json":
+        output.write(json.dumps(grades))
+
+    else:
+        print(str(grades))
