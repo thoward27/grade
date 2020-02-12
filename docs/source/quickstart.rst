@@ -91,7 +91,7 @@ from the root directory where both files are contained.
 
 Once you have run a given test suite, you can control output from the CLI.
 Simply run ``python -m grade report`` to have the output written to ``stdout``.
-For example, to output to Markdown: ``python -m grade report markdown``.
+For example, to output to Markdown: ``python -m grade report --format markdown``.
 
 Further Reading
 =====================

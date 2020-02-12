@@ -9,6 +9,6 @@ You can control what gets executed, and how it gets reported quite easily:
 .. code:: bash
 
     python -m grade run
-    python -m grade report gradescope
+    python -m grade report --format markdown
 
 For full details on the command line interface, run `python -m grade --help`

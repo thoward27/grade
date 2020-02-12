@@ -34,7 +34,7 @@ class TestMain(unittest.TestCase):
     def test_json_output(self):
         Pipeline(
             Run([PYTHON, "-m", "grade", "run", "-p", "test_mixins.py"]),
-            Run([PYTHON, "-m", "grade", "report", "json", "-"]),
+            Run([PYTHON, "-m", "grade", "report", "--format", "json"]),
             AssertExitSuccess(),
             AssertStdoutContains(["tests"]),
             Lambda(lambda results: self.assertGreater(len(json.loads(results.stdout)["tests"]), 3)),
