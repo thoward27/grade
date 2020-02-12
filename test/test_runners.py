@@ -70,6 +70,7 @@ class TestRunner(unittest.TestCase):
             self.assertTrue(False)
             return
 
+        @visibility('after_due_date')
         def test_failure(self):
             print("Some output.")
             self.weight = 10
@@ -94,6 +95,7 @@ class TestRunner(unittest.TestCase):
         self.assertEqual(2, len(results['leaderboard']))
 
         self.assertIn('visibility', results)
+        self.assertEqual(len([t for t in results['tests'] if 'visibility' in t]), 1)
 
         self.assertIn('execution_time', results)
 
