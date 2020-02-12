@@ -125,11 +125,12 @@ class AssertValgrindSuccess:
 
     def __call__(self, results: CompletedProcess) -> CompletedProcess:
         if type(results.args) is list:
+            # TODO: Add --exit-on-first-error=yes back in when valgrind > 3.13 is available on ubuntu LTS
             results = Run(
-                ['valgrind', '-q', '--error-exitcode=1', '--exit-on-first-error=yes', *results.args])()
+                ['valgrind', '-q', '--error-exitcode=1', *results.args])()
         elif type(results.args) is str:
             results = Run(
-                f'valgrind -q --error-exitcode=1 --exit-on-first-error=yes {results.args}', shell=True)()
+                f'valgrind -q --error-exitcode=1 {results.args}', shell=True)()
         results = AssertExitSuccess()(results)
         return results
 
