@@ -97,7 +97,11 @@ class Result(unittest.TextTestResult):
             result['output'] = self.parseExceptions(exceptions)
         elif outputs:
             result['output'] = outputs
-
+        
+        visibility = self.getattr(test, '__visibility__')
+        if visibility:
+            result['visibility'] = visibility
+        
         self.data['tests'].append(result)
         return
 
