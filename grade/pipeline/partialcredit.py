@@ -29,6 +29,9 @@ class PartialCredit:
     def __init__(self, pipelines: Iterator[Pipeline], value: Union[int, List[int]]):
         self.pipelines = list(pipelines)
         self.max_score = value
+        if type(value) is list:
+            self.max_score = (sum(value[:len(self.pipelines) % len(value)])
+                              + sum(value) * len(self.pipelines) // len(value))
 
         self.value = deque(value if type(value) is list else [value / len(self.pipelines)])
         self._score = 0
