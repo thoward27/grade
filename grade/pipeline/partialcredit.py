@@ -54,5 +54,7 @@ class PartialCredit:
             except Exception as e:
                 logging.exception(e, exc_info=False)
             else:
-                self._score += self.value.popleft()
+                self._score += self.value[0]
+            finally:
+                self.value.popleft()
         return self

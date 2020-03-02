@@ -48,7 +48,7 @@ class TestPartialCredit(unittest.TestCase):
         logging.disable(logging.CRITICAL)
         results = PartialCredit(pipelines, values)()
         logging.disable(logging.NOTSET)
-        self.assertEqual(results.score, 11)
+        self.assertEqual(results.score, 20)
         return
 
     def test_value_list_all_fail(self):
