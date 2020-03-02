@@ -26,7 +26,7 @@ class Check:
             self.callback(results)
         except AssertionError:
             results.returncode += 1
-            results.stdout.write(f'Check Failed!\n{self.callback} raised an exception!')
+            results.stdout.write(f"Check Failed!\n{self.callback} raised an exception!")
         else:
             results.returncode = 0
         finally:
@@ -41,6 +41,7 @@ class Not:
     If the enclosed callback does not throw an exception,
     an assertion error is raised.
     """
+
     def __init__(self, callback: Callback):
         self.callback = callback
         return
@@ -52,12 +53,13 @@ class Not:
             log.debug(err)
             return results
         else:
-            raise AssertionError(f'{self.callback} passed!')
+            raise AssertionError(f"{self.callback} passed!")
 
 
 class Or:
     """ Ensures that at least one of the callbacks given passes.
     """
+
     def __init__(self, *callbacks):
         self.callbacks = callbacks
         return
@@ -70,19 +72,20 @@ class Or:
                 log.debug(err)
             else:
                 return results
-        raise AssertionError(f'None of the callbacks passed! [{[str(c) for c in self.callbacks]}]')
+        raise AssertionError(f"None of the callbacks passed! [{[str(c) for c in self.callbacks]}]")
 
 
 class AssertFaster:
     """ Asserts that the most recent call to Run() was faster than duration.
     """
+
     def __init__(self, duration):
         self.duration = duration
         return
 
     def __call__(self, results: CompletedProcess) -> CompletedProcess:
         if results.duration > self.duration:
-            raise AssertionError(f'{results.args} took longer than {self.duration}')
+            raise AssertionError(f"{results.args} took longer than {self.duration}")
         return results
 
 
@@ -91,11 +94,15 @@ class AssertExitSuccess:
 
     def __call__(self, results: CompletedProcess) -> CompletedProcess:
         if results.returncode != 0:
-            raise AssertionError('\n'.join([
-                f'{results.args} should have exited successfully. {results.returncode} != 0',
-                results.stdout,
-                results.stderr
-            ]))
+            raise AssertionError(
+                "\n".join(
+                    [
+                        f"{results.args} should have exited successfully. {results.returncode} != 0",
+                        results.stdout,
+                        results.stderr,
+                    ]
+                )
+            )
         return results
 
 
@@ -104,19 +111,20 @@ class AssertExitFailure:
 
     def __call__(self, results: CompletedProcess) -> CompletedProcess:
         if results.returncode == 0:
-            raise AssertionError(f'{results.args} should have exited unsuccessfully.')
+            raise AssertionError(f"{results.args} should have exited unsuccessfully.")
         return results
 
 
 class AssertExitStatus:
     """ Asserts that the program exited with a specific error code."""
+
     def __init__(self, returncode: int):
         self.returncode = returncode
         return
 
     def __call__(self, results: CompletedProcess) -> CompletedProcess:
         if results.returncode != self.returncode:
-            raise AssertionError(f'{results.args} return {results.returncode}, expected {self.returncode}')
+            raise AssertionError(f"{results.args} return {results.returncode}, expected {self.returncode}")
         return results
 
 
@@ -126,11 +134,9 @@ class AssertValgrindSuccess:
     def __call__(self, results: CompletedProcess) -> CompletedProcess:
         if type(results.args) is list:
             # TODO: Add --exit-on-first-error=yes back in when valgrind > 3.13 is available on ubuntu LTS
-            results = Run(
-                ['valgrind', '-q', '--error-exitcode=1', *results.args])()
+            results = Run(["valgrind", "-q", "--error-exitcode=1", *results.args])()
         elif type(results.args) is str:
-            results = Run(
-                f'valgrind -q --error-exitcode=1 {results.args}', shell=True)()
+            results = Run(f"valgrind -q --error-exitcode=1 {results.args}", shell=True)()
         results = AssertExitSuccess()(results)
         return results
 
@@ -150,7 +156,7 @@ class AssertStdoutMatches:
         if stdout and filepath:
             raise ValueError("Can only pass one of stdout or filepath.")
         elif filepath:
-            with open(filepath, 'r') as f:
+            with open(filepath, "r") as f:
                 self.stdout = f.read()
         else:
             self.stdout = stdout
@@ -159,17 +165,17 @@ class AssertStdoutMatches:
         if self.stdout is not None:
             pass
         elif type(results.args) is list:
-            self.stdout = list(
-                filter(lambda f: path.exists(f + '.stdout'), results.args))
-            assert (len(self.stdout) == 1)
-            with open(self.stdout[0] + '.stdout', 'r') as f:
+            self.stdout = list(filter(lambda f: path.exists(f + ".stdout"), results.args))
+            assert len(self.stdout) == 1
+            with open(self.stdout[0] + ".stdout", "r") as f:
                 self.stdout = f.read()
         else:
             raise ValueError(f"Cannot infer stdout file for {results.args}")
 
         if results.stdout.strip() != self.stdout.strip():
             raise AssertionError(
-                f'{results.args} stdout does not match expected.\n{self.stdout.strip()} !=\n{results.stdout.strip()}')
+                f"{results.args} stdout does not match expected.\n{self.stdout.strip()} !=\n{results.stdout.strip()}"
+            )
 
         return results
 
@@ -189,7 +195,7 @@ class AssertStderrMatches:
         if stderr and filepath:
             raise ValueError("Can only pass one of stderr and filepath.")
         elif filepath:
-            with open(filepath, 'r') as f:
+            with open(filepath, "r") as f:
                 self.stderr = f.read()
         else:
             self.stderr = stderr
@@ -199,9 +205,9 @@ class AssertStderrMatches:
             pass
 
         elif type(results.args) is list:
-            self.stderr = list(filter(lambda f: path.exists(f + '.stderr'), results.args))
-            assert (len(self.stderr) == 1)
-            with open(self.stderr[0] + '.stderr', 'r') as f:
+            self.stderr = list(filter(lambda f: path.exists(f + ".stderr"), results.args))
+            assert len(self.stderr) == 1
+            with open(self.stderr[0] + ".stderr", "r") as f:
                 self.stderr = f.read()
 
         else:
@@ -209,7 +215,8 @@ class AssertStderrMatches:
 
         if results.stderr.strip() != self.stderr.strip():
             raise AssertionError(
-                f'{results.args} stderr does not match expected.\n{self.stderr.strip()} !=\n{results.stderr.strip()}')
+                f"{results.args} stderr does not match expected.\n{self.stderr.strip()} !=\n{results.stderr.strip()}"
+            )
 
         return results
 
@@ -223,7 +230,7 @@ class AssertStdoutRegex:
 
     def __call__(self, results: CompletedProcess) -> CompletedProcess:
         if not self.pattern.search(results.stdout):
-            raise AssertionError(f'{self.pattern.pattern} not found in {results.stdout}')
+            raise AssertionError(f"{self.pattern.pattern} not found in {results.stdout}")
         return results
 
 
@@ -236,7 +243,7 @@ class AssertStderrRegex:
 
     def __call__(self, results: CompletedProcess) -> CompletedProcess:
         if not self.pattern.search(results.stderr):
-            raise AssertionError(f'{self.pattern.pattern} not found in {results.stderr}')
+            raise AssertionError(f"{self.pattern.pattern} not found in {results.stderr}")
         return results
 
 
@@ -249,7 +256,7 @@ class AssertStdoutContains:
 
     def __call__(self, results: CompletedProcess) -> CompletedProcess:
         if not all([s in results.stdout for s in self.strings]):
-            raise AssertionError(f'One or more of {self.strings} not in {results.stdout}')
+            raise AssertionError(f"One or more of {self.strings} not in {results.stdout}")
         return results
 
 
@@ -262,5 +269,5 @@ class AssertStderrContains:
 
     def __call__(self, results: CompletedProcess) -> CompletedProcess:
         if not all([s in results.stderr for s in self.strings]):
-            raise AssertionError(f'One or more of {self.strings} not in {results.stderr}')
+            raise AssertionError(f"One or more of {self.strings} not in {results.stderr}")
         return results

@@ -9,7 +9,7 @@ class WriteStdout:
     File defaults to ./temp
     """
 
-    def __init__(self, filepath: str = 'temp', overwrite: bool = True):
+    def __init__(self, filepath: str = "temp", overwrite: bool = True):
         self.filepath = filepath
         self.overwrite = overwrite
 
@@ -17,7 +17,7 @@ class WriteStdout:
         if path.exists(self.filepath) and self.overwrite is False:
             raise FileExistsError
 
-        with open(self.filepath, 'w') as f:
+        with open(self.filepath, "w") as f:
             f.write(results.stdout)
 
         return results
@@ -29,7 +29,7 @@ class WriteStderr:
     File defaults to ./temp
     """
 
-    def __init__(self, filepath: str = 'temp', overwrite: bool = True):
+    def __init__(self, filepath: str = "temp", overwrite: bool = True):
         self.filepath = filepath
         self.overwrite = overwrite
 
@@ -37,7 +37,7 @@ class WriteStderr:
         if path.exists(self.filepath) and self.overwrite is False:
             raise FileExistsError
 
-        with open(self.filepath, 'w') as f:
+        with open(self.filepath, "w") as f:
             f.write(results.stderr)
 
         return results
@@ -55,6 +55,6 @@ class WriteOutputs:
         self.testcase = testcase
 
     def __call__(self, results: CompletedProcess) -> CompletedProcess:
-        WriteStdout(self.testcase + '.stdout', True)(results)
-        WriteStderr(self.testcase + '.stderr', True)(results)
+        WriteStdout(self.testcase + ".stdout", True)(results)
+        WriteStderr(self.testcase + ".stderr", True)(results)
         return results

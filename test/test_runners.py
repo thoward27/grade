@@ -43,12 +43,11 @@ class TestRunner(unittest.TestCase):
     """
 
     class TestPassing(ScoringMixin, unittest.TestCase):
-
         @weight(10)
         def test_full_credit(self):
             """ Testing one thing or another. """
-            self.leaderboardTitle = 'Successful'
-            self.leaderboardOrder = 'asc'
+            self.leaderboardTitle = "Successful"
+            self.leaderboardOrder = "asc"
             self.leaderboardScore = 10
 
             self.assertTrue(True)
@@ -63,14 +62,14 @@ class TestRunner(unittest.TestCase):
             return
 
         @weight(10)
-        @leaderboard('fastest fail')
+        @leaderboard("fastest fail")
         def test_failure_leaderboard(self, set_leaderboard_score=None):
             """ Testing something that fails. """
             set_leaderboard_score(100)
             self.assertTrue(False)
             return
 
-        @visibility('after_due_date')
+        @visibility("after_due_date")
         def test_failure(self):
             print("Some output.")
             self.weight = 10
@@ -86,20 +85,20 @@ class TestRunner(unittest.TestCase):
         results = GradedRunner().run(suite)
         results = json.loads(results.json)
 
-        self.assertIn('tests', results)
-        self.assertEqual(5, len(results['tests']))
-        self.assertEqual(15, sum([test['score'] for test in results['tests']]))
-        self.assertTrue(all(['output' in test for test in results['tests']]))
+        self.assertIn("tests", results)
+        self.assertEqual(5, len(results["tests"]))
+        self.assertEqual(15, sum([test["score"] for test in results["tests"]]))
+        self.assertTrue(all(["output" in test for test in results["tests"]]))
 
-        self.assertIn('leaderboard', results)
-        self.assertEqual(2, len(results['leaderboard']))
+        self.assertIn("leaderboard", results)
+        self.assertEqual(2, len(results["leaderboard"]))
 
-        self.assertIn('visibility', results)
-        self.assertEqual(len([t for t in results['tests'] if 'visibility' in t]), 1)
+        self.assertIn("visibility", results)
+        self.assertEqual(len([t for t in results["tests"] if "visibility" in t]), 1)
 
-        self.assertIn('execution_time', results)
+        self.assertIn("execution_time", results)
 
-        self.assertIsInstance(results['tests'][0]['output'], str)
+        self.assertIsInstance(results["tests"][0]["output"], str)
         return
 
     def test_markdown_successful(self):
@@ -110,9 +109,8 @@ class TestRunner(unittest.TestCase):
         return
 
     class TestFailing(ScoringMixin, unittest.TestCase):
-
         def setUp(self):
-            self.require('thingsthatshallnotbe')
+            self.require("thingsthatshallnotbe")
             return super().setUp()
 
         @weight(10)
@@ -124,21 +122,20 @@ class TestRunner(unittest.TestCase):
         results = GradedRunner().run(suite)
         results = json.loads(results.json)
 
-        self.assertIn('tests', results)
-        self.assertEqual(1, len(results['tests']))
+        self.assertIn("tests", results)
+        self.assertEqual(1, len(results["tests"]))
 
-        self.assertIn('leaderboard', results)
-        self.assertEqual(0, len(results['leaderboard']))
+        self.assertIn("leaderboard", results)
+        self.assertEqual(0, len(results["leaderboard"]))
 
-        self.assertIn('visibility', results)
+        self.assertIn("visibility", results)
 
-        self.assertIn('execution_time', results)
+        self.assertIn("execution_time", results)
         return
 
 
 class TestClassSetupFails(unittest.TestCase):
     class Test(ScoringMixin, unittest.TestCase):
-
         @classmethod
         def setUpClass(cls):
             assert False
@@ -152,6 +149,6 @@ class TestClassSetupFails(unittest.TestCase):
         results = GradedRunner().run(suite)
         results = json.loads(results.json)
 
-        self.assertEqual(len(results['tests']), 1)
-        self.assertIsInstance(results['tests'][0]['output'], str)
-        self.assertNotEqual(results['tests'][0]['output'], '')
+        self.assertEqual(len(results["tests"]), 1)
+        self.assertIsInstance(results["tests"][0]["output"], str)
+        self.assertNotEqual(results["tests"][0]["output"], "")

@@ -19,16 +19,14 @@ def static(name, value):
     return decorate
 
 
-weight = partial(static, '__weight__')
-weight.__doc__ = \
-    """ Simple decorator to add a __weight__ property to a function
+weight = partial(static, "__weight__")
+weight.__doc__ = """ Simple decorator to add a __weight__ property to a function
     
     Usage: @weight(3.0)
     """
 
-visibility = partial(static, '__visibility__')
-visibility.__doc__ = \
-    """ Simple decorator to add a __visibility__ property to a function
+visibility = partial(static, "__visibility__")
+visibility.__doc__ = """ Simple decorator to add a __visibility__ property to a function
     
     Usage: @visibility("hidden")
     
@@ -40,7 +38,7 @@ visibility.__doc__ = \
     """
 
 
-def leaderboard(name=None, order='desc'):
+def leaderboard(name=None, order="desc"):
     """ Decorator that indicates that a test corresponds to a leaderboard column
 
     Usage: @leaderboard(column title, ordering)
@@ -64,16 +62,16 @@ def leaderboard(name=None, order='desc'):
     """
 
     def decorate(func):
-        setattr(func, '__leaderboard_title__', name if name else func.__name__)
-        setattr(func, '__leaderboard_order__', order)
-        setattr(func, '__leaderboard_score__', None)
+        setattr(func, "__leaderboard_title__", name if name else func.__name__)
+        setattr(func, "__leaderboard_order__", order)
+        setattr(func, "__leaderboard_score__", None)
 
         def set_score(value):
-            setattr(wrapper, '__leaderboard_score__', value)
+            setattr(wrapper, "__leaderboard_score__", value)
 
         @wraps(func)
         def wrapper(*args, **kwargs):
-            kwargs['set_leaderboard_score'] = set_score
+            kwargs["set_leaderboard_score"] = set_score
             return func(*args, **kwargs)
 
         return wrapper
