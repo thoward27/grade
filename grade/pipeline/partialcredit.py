@@ -1,6 +1,8 @@
 import logging
 from collections import deque
 from typing import Iterator, Union, List
+from itertools import cycle
+from typing import Iterable
 
 from .pipeline import Pipeline
 
@@ -28,12 +30,13 @@ class PartialCredit:
 
     def __init__(self, pipelines: Iterator[Pipeline], value: Union[int, List[int]]):
         self.pipelines = list(pipelines)
-        self.max_score = value
-        if type(value) is list:
-            self.max_score = (sum(value[:len(self.pipelines) % len(value)])
-                              + sum(value) * len(self.pipelines) // len(value))
 
-        self.value = deque(value if type(value) is list else [value / len(self.pipelines)])
+        if isinstance(value, Iterable):
+            self.value = deque([v for (v, _) in zip(cycle(value), range(len(self.pipelines)))])
+        else:
+            self.value = deque([value / len(self.pipelines) for _ in range(len(self.pipelines))])
+
+        self.max_score = sum(self.value)
         self._score = 0
         self._executed = False
 
@@ -51,6 +54,5 @@ class PartialCredit:
             except Exception as e:
                 logging.exception(e, exc_info=False)
             else:
-                self._score += self.value[0]
-                self.value.rotate(1)
+                self._score += self.value.popleft()
         return self
