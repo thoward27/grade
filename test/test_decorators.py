@@ -46,6 +46,14 @@ class TestDecorators(unittest.TestCase):
         self.assertEqual(test_visible.__visibility__, "visible")
         return
 
+    def test_testname(self):
+        @name("Test Name")
+        def test_name_exists():
+            return
+
+        self.assertEqual(test_name_exists.__testname__, "Test Name")
+        return
+
     def test_leaderboard(self):
         @leaderboard()
         def test_defaults():

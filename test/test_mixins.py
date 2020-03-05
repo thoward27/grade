@@ -62,6 +62,18 @@ class TestScoringMixin(ScoringMixin, unittest.TestCase):
         self.assertEqual(x.test_something.__visibility__, "invisible")
         return
 
+    def test_testname(self):
+
+        class Test(ScoringMixin):
+            def test_name(self):
+                self.testname = "Name Test"
+                assert self.testname == "Name Test"
+
+        x = Test()
+        x.test_name()
+        self.assertEqual(x.test_name.__testname__, "Name Test")
+        return
+
     def test_leaderboard(self):
         """ Can we modify and recall a tests leaderboard standing? """
 

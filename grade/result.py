@@ -61,6 +61,11 @@ class Result(unittest.TextTestResult):
         return [m for f, m in [*self.failures, *self.errors] if f == test]
 
     def getName(self, test):
+        # If a user-defined name exists, use it.
+        name = self.getattr(test, "__testname__", None)
+        if name:
+            return name
+
         name = self.getattr(test, "__qualname__")
         # TODO: Walrus once python 3.8 is supported.
         description = test.shortDescription()
