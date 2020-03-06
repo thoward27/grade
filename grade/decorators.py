@@ -37,10 +37,10 @@ visibility.__doc__ = """ Simple decorator to add a __visibility__ property to a 
     - `visible` (default): test case will always be shown
     """
 
-testname = partial(static, "__testname__")
-testname.__doc__ = """ Simple decorator to add a __testname__ property to a function
+name = partial(static, "__name__")
+name.__doc__ = """ Simple decorator to add a __name__ property to a function
 
-    Usage: @testname("Functionality Test")
+    Usage: @name("Functionality Test")
     """
 
 

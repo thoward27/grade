@@ -82,17 +82,17 @@ class ScoringMixin:
         self.setattr("__visibility__", visibility)
 
     @property
-    def testname(self) -> str:
+    def name(self) -> str:
         """ Returns the name of the test.
 
         This controls which name the students will see for a test.
         """
-        return getattr(self.getTest(), "__testname__", None)
+        return getattr(self.getTest(), "__name__", None)
 
-    @testname.setter
-    def testname(self, name: str):
+    @name.setter
+    def name(self, name: str):
         """ Sets the name of the test. """
-        self.setattr("__testname__", name)
+        self.setattr("__name__", name)
 
     @property
     def leaderboard(self) -> dict:

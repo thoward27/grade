@@ -62,15 +62,14 @@ class Result(unittest.TextTestResult):
 
     def getName(self, test):
         # If a user-defined name exists, use it.
-        name = self.getattr(test, "__testname__", None)
-        if name:
-            return name
+        name = self.getattr(test, "__name__", None)
+        if not name:
+            name = self.getattr(test, "__qualname__")
+            # TODO: Walrus once python 3.8 is supported.
+            description = test.shortDescription()
+            if description:
+                name = f"{name}: {description}"
 
-        name = self.getattr(test, "__qualname__")
-        # TODO: Walrus once python 3.8 is supported.
-        description = test.shortDescription()
-        if description:
-            name = f"{name}: {description}"
         return name
 
     def getScore(self, test):

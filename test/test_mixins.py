@@ -62,16 +62,16 @@ class TestScoringMixin(ScoringMixin, unittest.TestCase):
         self.assertEqual(x.test_something.__visibility__, "invisible")
         return
 
-    def test_testname(self):
+    def test_name(self):
 
         class Test(ScoringMixin):
-            def test_name(self):
-                self.testname = "Name Test"
-                assert self.testname == "Name Test"
+            def test_name_exists(self):
+                self.name = "Name Test"
+                assert self.name == "Name Test"
 
         x = Test()
-        x.test_name()
-        self.assertEqual(x.test_name.__testname__, "Name Test")
+        x.test_name_exists()
+        self.assertEqual(x.test_name_exists.__name__, "Name Test")
         return
 
     def test_leaderboard(self):
