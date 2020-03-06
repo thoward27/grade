@@ -37,6 +37,12 @@ visibility.__doc__ = """ Simple decorator to add a __visibility__ property to a 
     - `visible` (default): test case will always be shown
     """
 
+name = partial(static, "__name__")
+name.__doc__ = """ Simple decorator to add a __name__ property to a function
+
+    Usage: @name("Functionality Test")
+    """
+
 
 def leaderboard(name=None, order="desc"):
     """ Decorator that indicates that a test corresponds to a leaderboard column
