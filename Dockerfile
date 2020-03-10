@@ -1,10 +1,8 @@
-FROM python:3.8.0
+FROM python:3.8
 
-# First let's just get things updated.
-RUN apt-get -y update --fix-missing && apt-get -y upgrade
-
-# Dependancies
-RUN apt-get install -y \
+# Dependencies
+RUN apt-get update -qq --fix-missing && apt-get upgrade -qq \
+    && apt-get install -qq \
     make \
     gcc \
     clang \
@@ -13,14 +11,17 @@ RUN apt-get install -y \
     build-essential \
     software-properties-common \
     wget \
-    curl 
+    curl
 
-# Install grade
-RUN mkdir /app/
-COPY . /app/
-RUN python -m pip install /app/
-RUN python -m pip install -r /app/requirements.txt
+# Download and configure poetry
+RUN curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python > /dev/null
+ENV PATH="/root/.poetry/bin:$PATH"
+RUN poetry config virtualenvs.create false
 
-# Defaults
 WORKDIR /app/
-CMD ["python", "-m", "unittest", "discover"]
+COPY poetry.lock pyproject.toml /app/
+RUN poetry install --no-root
+COPY . /app/
+RUN poetry install
+
+CMD ["make", "test"]
