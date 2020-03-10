@@ -60,7 +60,7 @@ class TestAsserts(unittest.TestCase):
 class TestAssertContains(unittest.TestCase):
     def test_stdout_contains(self):
         results = Run(["ls"])()
-        AssertStdoutContains(["README.md", "setup.py"])(results)
+        AssertStdoutContains(["README.md", "pyproject.toml"])(results)
 
         with self.assertRaises(AssertionError):
             AssertStdoutContains(["pickleRick"])(results)
