@@ -28,5 +28,7 @@ jobs:
         PYPI_PASSWORD: ${{ secrets.PYPI_PASSWORD }}
       run: |
         poetry export --dev -f requirements.txt > requirements.txt
+        git config --global user.name "semantic-release"
+        git config --global user.email "info@tomhoward.codes"
         poetry run semantic-release changelog > CHANGELOG.md
         poetry run semantic-release publish
