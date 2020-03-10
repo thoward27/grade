@@ -12,8 +12,7 @@
 #
 import os
 import sys
-
-from pkg_resources import get_distribution, DistributionNotFound
+import pkg_resources
 
 sys.path.insert(0, os.path.abspath(".."))
 
@@ -24,11 +23,7 @@ copyright = "2019, Tom Howard"
 author = "Tom Howard"
 
 # The full version, including alpha/beta/rc tags
-try:
-    release = get_distribution("grade").version
-    version = ".".join(release.split(".")[:2])
-except DistributionNotFound:
-    pass
+version = pkg_resources.get_distribution("grade").version
 
 # -- General configuration ---------------------------------------------------
 
