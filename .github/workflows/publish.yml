@@ -33,7 +33,7 @@ jobs:
       run: |
         poetry run semantic-release version
         poetry export --dev -f requirements.txt > requirements.txt
-        poetry run semantic-release changelog > CHANGELOG.md
+        printf "## %s\n%s\n\n%s\n" "$(git tag --sort=taggerdate | tail -1)" "$(poetry run semantic-release changelog)" "$(cat CHANGELOG.md)" > CHANGELOG.md
         git commit -a --amend --no-edit
         poetry build
         poetry publish -u ${{ secrets.PYPI_USERNAME }} -p ${{ secrets.PYPI_PASSWORD }}

@@ -1,3 +1,4 @@
+## v2.1.6
 
 ### Fix
 * Publish updates (bfc9087a8fc1b2265d69776ec2112b4d1f4db100)
@@ -12,4 +13,3 @@
 
 ### Documentation
 * Sphinx needs grade to be installed (1e16a1df12396d8d9f229f176fec4265365d6c62)
-
