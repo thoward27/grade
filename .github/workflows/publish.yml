@@ -9,17 +9,15 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v1
+    - uses: actions/checkout@v2
     - name: Set up Python
       uses: actions/setup-python@v1
       with:
         python-version: '3.x'
 
     - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
-        python -m pip install poetry
-        poetry install
+      run: make init
+
     - name: Test
       run: make test
 
@@ -28,15 +26,11 @@ jobs:
         git config --global user.name "Github Actions"
         git config --global user.email "action@github.com"
 
-    - name: Build and publish
-      # First make the commit for the release, tag requirements updates and changelog
-      run: |
-        poetry run semantic-release version
-        poetry export --dev -f requirements.txt > requirements.txt
-        printf "## %s\n%s\n\n%s\n" "$(git tag --sort=taggerdate | tail -1)" "$(poetry run semantic-release changelog)" "$(cat CHANGELOG.md)" > CHANGELOG.md
-        git commit -a --amend --no-edit
-        poetry build
-        poetry publish -u ${{ secrets.PYPI_USERNAME }} -p ${{ secrets.PYPI_PASSWORD }}
+    - name: Build and Publish
+      env:
+        PYPI_USERNAME: ${{ secrets.PYPI_USERNAME }}
+        PYPI_PASSWORD: ${{ secrets.PYPI_PASSWORD }}
+      run: make publish 
   
     - name: Push to git
       uses: ad-m/github-push-action@master
