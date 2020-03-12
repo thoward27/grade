@@ -48,6 +48,7 @@ ifneq ($(TAG), $(call tag))
 	@echo "Creating a release"
 	# If we get into here, we know we have a new commit to ammend (includes changelog and deps)
 	git commit -a --amend --no-edit
+	hub release create $(strip $(call tag))
 	poetry build
 	poetry publish -u PYPI_USERNAME -p PYPI_PASSWORD
 endif
