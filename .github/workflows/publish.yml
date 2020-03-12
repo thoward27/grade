@@ -33,9 +33,3 @@ jobs:
         PYPI_PASSWORD: ${{ secrets.PYPI_PASSWORD }}
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: make publish 
-  
-    - name: Push to git
-      uses: ad-m/github-push-action@master
-      with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
-        tags: true
