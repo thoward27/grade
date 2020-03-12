@@ -21,7 +21,7 @@ test:
 
 coverage:
 	poetry run python -m coverage run -m unittest discover
-	python run python -m coverage xml -i
+	poetry run python -m coverage xml -i
 
 # If version bump is needed, this bumps version, commits the change, and tags it.
 version:
@@ -29,14 +29,14 @@ version:
 
 # Generates changelog if necessary.
 changelog:
-ifeq ($(TAG), $(call tag))
+ifneq ($(TAG), $(call tag))
 	@echo "Generating changelog."
 	@echo "##" $(call tag) > tmp.md
 	@poetry run semantic-release changelog >> tmp.md
 	@cat CHANGELOG.md >> tmp.md
 	@mv tmp.md CHANGELOG.md
 else
-	@echo "No changelog generated, already at latest version"
+	@echo "No changelog generated, $(TAG) == $(call tag)"
 endif
 
 deps:
@@ -51,4 +51,6 @@ ifneq ($(TAG), $(call tag))
 	hub release create $(strip $(call tag))
 	poetry build
 	poetry publish -u PYPI_USERNAME -p PYPI_PASSWORD
+else
+	@echo "Nothing to publish. $(TAG) == $(call tag)
 endif
