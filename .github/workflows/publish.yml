@@ -25,6 +25,7 @@ jobs:
       run: |
         git config --global user.name "Github Actions"
         git config --global user.email "action@github.com"
+        curl -fsSL https://github.com/github/hub/raw/master/script/get | bash -s 2.14.1
 
     - name: Build and Publish
       env:
