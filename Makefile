@@ -10,6 +10,8 @@ endef
 COMMIT := $(call commit)
 TAG := $(call tag)
 
+NEW_VERSION = $(if $(filter-out $(TAG),$(call tag)),1,0)
+
 init:
 	python -m pip install -q --upgrade pip
 	python -m pip install -q --upgrade poetry
@@ -29,45 +31,40 @@ version:
 
 # Generates changelog if necessary.
 changelog:
+ifeq ("$(NEW_VERSION)","1")
 	@echo "Generating changelog."
 	@echo "## " $(call tag) > tmp.md
 	@poetry run semantic-release changelog >> tmp.md
 	@cat CHANGELOG.md >> tmp.md
 	@mv tmp.md CHANGELOG.md
+endif
 
 deps:
 	poetry export --dev -f requirements.txt > requirements.txt
 
-debug: debug-1 debug-2
-	@echo make --version
+debug: debug-1
+	echo $(NEW_VERSION)
+	echo $(if $(NEW_VERSION),"fuck","you")
+	@echo "$(shell make --version)"
 	@echo $(COMMIT) $(call commit)
 	@echo $(TAG) $(call tag)
 	@echo $(filter-out $(call tag),$(TAG))
 
 debug-1:
-ifeq ($(filter-out $(call tag),$(TAG)),)
+ifneq ("$(NEW_VERSION)","0")
 	@echo "in debug-1"
-endif
-
-debug-2:
-ifneq ($(filter-out $(call tag),$(TAG)),)
-	@echo "in debug-2"
-endif
-
-debug-3:
-ifeq ($(TAG),$(call tag))
-	@echo "in debug-3"
 endif
 
 # Builds a new release.
 publish: version changelog deps debug
-ifneq ("$(COMMIT)","$(call commit)")
+ifneq ($(NEW_VERSION),"")
 	@echo "Creating a release"
 	# If we get into here, we know we have a new commit to ammend (includes changelog and deps)
 	git commit -a --amend --no-edit
-	hub release create $(strip $(call tag))
 	poetry build
-	poetry publish -u PYPI_USERNAME -p PYPI_PASSWORD
+	# poetry publish -u PYPI_USERNAME -p PYPI_PASSWORD
+	# hub release create $(strip $(call tag))
+	# git push
 else
 	@echo "Nothing to publish. $(COMMIT) == $(call commit)"
 endif
