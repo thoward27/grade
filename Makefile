@@ -46,7 +46,7 @@ deps:
 	poetry export --dev -f requirements.txt > requirements.txt
 
 # Builds a new release.
-publish: version changelog deps debug
+publish: version changelog deps
 	@if [ "$(NEW_VERSION)" = "1" ]; \
 	then \
 		echo "Creating a release" \
