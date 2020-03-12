@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "grade"
-version = "2.1.8"
+version = "2.1.9"
 description = "a package focused on autograding"
 authors = ["Tom <info@tomhoward.codes>"]
 license = "AGPL-3.0"
