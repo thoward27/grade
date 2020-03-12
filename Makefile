@@ -4,7 +4,7 @@ $(shell git rev-parse HEAD)
 endef
 
 define tag
-$(strip $(shell git tag --sort=taggerdate | tail -1))
+$(or $(strip $(shell git tag --sort=taggerdate | tail -1)),undefined)
 endef
 
 COMMIT := $(call commit)
