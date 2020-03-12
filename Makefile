@@ -52,6 +52,6 @@ publish: version changelog deps
 		echo "Creating a release" \
 		&& git commit -a --amend --no-edit \
 		&& poetry build \
-		&& poetry publish -u PYPI_USERNAME -p PYPI_PASSWORD \
+		&& poetry publish -u ${PYPI_USERNAME} -p ${PYPI_PASSWORD} \
 		&& hub release create $(strip $(call tag)); \
 	else echo "Skipping release, no new version to publish"; fi
