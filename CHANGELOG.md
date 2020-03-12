@@ -1,3 +1,8 @@
+##  v2.1.17
+
+### Fix
+* Hub cli needs token (551136e8a4c5c85e0b66e176bbbf6cbc7b7eec7c)
+
 ## v2.1.6
 
 ### Fix
