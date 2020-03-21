@@ -2,7 +2,26 @@ import os
 import shutil
 import unittest
 
-from grade.pipeline import *
+from grade.pipeline import (
+    Run,
+    AssertExitSuccess,
+    Not,
+    AssertValgrindSuccess,
+    Pipeline,
+    AssertStdoutContains,
+    AssertExitStatus,
+    Or,
+    AssertExitFailure,
+    AssertStderrContains,
+    AssertFaster,
+    AssertStdoutMatches,
+    CompletedProcess,
+    WriteOutputs,
+    AssertStderrMatches,
+    Check,
+    AssertStderrRegex,
+    AssertStdoutRegex,
+)
 
 
 class TestAsserts(unittest.TestCase):

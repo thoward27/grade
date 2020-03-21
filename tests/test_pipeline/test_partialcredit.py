@@ -1,7 +1,13 @@
 import unittest
 import logging
 
-from grade.pipeline import *
+from grade.pipeline import (
+    Run,
+    Pipeline,
+    AssertExitSuccess,
+    PartialCredit,
+    AssertExitFailure,
+)
 
 
 class TestPartialCredit(unittest.TestCase):

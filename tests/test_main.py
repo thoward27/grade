@@ -2,8 +2,15 @@ import json
 import sys
 import unittest
 
-from grade.pipeline import *
-from grade.pipeline import Run
+from grade.pipeline import (
+    Run,
+    AssertExitSuccess,
+    Pipeline,
+    AssertStdoutMatches,
+    AssertStderrMatches,
+    AssertStdoutContains,
+    Lambda,
+)
 
 PYTHON = sys.executable
 

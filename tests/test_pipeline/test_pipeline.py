@@ -3,7 +3,16 @@
 
 import unittest
 
-from grade.pipeline import *
+from grade.pipeline import (
+    Lambda,
+    Pipeline,
+    Run,
+    AssertExitFailure,
+    AssertExitSuccess,
+    AssertValgrindSuccess,
+    WriteOutputs,
+    CompletedProcess,
+)
 
 
 class TestPipeline(unittest.TestCase):

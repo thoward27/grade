@@ -4,9 +4,9 @@
 import json
 import unittest
 
-from grade.decorators import *
-from grade.mixins import *
-from grade.runners import *
+from grade.decorators import weight, leaderboard, visibility
+from grade.mixins import ScoringMixin
+from grade.runners import GradedRunner
 
 
 class TestRunner(unittest.TestCase):
