@@ -16,13 +16,15 @@ PYTHON = sys.executable
 
 
 class TestMain(unittest.TestCase):
-    def test_no_arguments(self):
+    @staticmethod
+    def test_no_arguments():
         Pipeline(
             Run([PYTHON, "-m", "grade"]), AssertExitSuccess(),
         )
         return
 
-    def test_successful_no_output(self):
+    @staticmethod
+    def test_successful_no_output():
         Pipeline(
             Run([PYTHON, "-m", "grade", "run", "-p", "test_mixins.py"]),
             AssertExitSuccess(),

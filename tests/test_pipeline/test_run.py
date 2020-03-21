@@ -31,7 +31,8 @@ class TestRun(unittest.TestCase):
             Run(["sleep", "30"], timeout=1)()
         return
 
-    def test_input(self):
+    @staticmethod
+    def test_input():
         Pipeline(
             Run(["cat", "README.md"]),
             AssertExitSuccess(),

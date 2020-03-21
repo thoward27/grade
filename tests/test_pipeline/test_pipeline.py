@@ -25,11 +25,13 @@ class TestPipeline(unittest.TestCase):
             tests = map(lambda t: Pipeline(Run(["ls"]), AssertExitFailure()), range(10))
             [test() for test in tests]
 
-    def test_passes(self):
+    @staticmethod
+    def test_passes():
         Pipeline(Run(["ls"]), AssertExitSuccess())
         return
 
-    def test_pass_multiple(self):
+    @staticmethod
+    def test_pass_multiple():
         tests = map(lambda t: Pipeline(Run(["ls"]), AssertExitSuccess()), range(10))
         [test() for test in tests]
 
