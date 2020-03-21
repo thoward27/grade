@@ -255,7 +255,7 @@ class AssertStdoutContains:
         self.strings = strings
 
     def __call__(self, results: CompletedProcess) -> CompletedProcess:
-        if not all([s in results.stdout for s in self.strings]):
+        if not all(s in results.stdout for s in self.strings):
             raise AssertionError(f"One or more of {self.strings} not in {results.stdout}")
         return results
 
@@ -268,6 +268,6 @@ class AssertStderrContains:
         self.strings = strings
 
     def __call__(self, results: CompletedProcess) -> CompletedProcess:
-        if not all([s in results.stderr for s in self.strings]):
+        if not all(s in results.stderr for s in self.strings):
             raise AssertionError(f"One or more of {self.strings} not in {results.stderr}")
         return results
