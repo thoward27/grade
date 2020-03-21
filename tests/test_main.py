@@ -21,7 +21,6 @@ class TestMain(unittest.TestCase):
         Pipeline(
             Run([PYTHON, "-m", "grade"]), AssertExitSuccess(),
         )
-        return
 
     @staticmethod
     def test_successful_no_output():
