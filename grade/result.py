@@ -38,11 +38,11 @@ class Result(unittest.TextTestResult):
 
     @property
     def score(self) -> int:
-        return sum([test["score"] for test in self.data["tests"]])
+        return sum(test["score"] for test in self.data["tests"])
 
     @property
     def maxScore(self) -> int:
-        return sum([test["max_score"] for test in self.data["tests"]])
+        return sum(test["max_score"] for test in self.data["tests"])
 
     # noinspection PyProtectedMember
     @staticmethod
@@ -52,7 +52,7 @@ class Result(unittest.TextTestResult):
     @staticmethod
     def parseExceptions(exceptions):
         output = "; ".join(exceptions)
-        output = "; ".join([line.strip() for line in output.split("\n")[1:] if line])
+        output = "; ".join(line.strip() for line in output.split("\n")[1:] if line)
         # Shave output to: final python file, failures/errors
         output = "".join([output.split(".py")[-2].split("/")[-1] + ".py", output.split('.py"')[-1]])
         return output.strip()
