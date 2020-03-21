@@ -87,8 +87,8 @@ class TestRunner(unittest.TestCase):
 
         self.assertIn("tests", results)
         self.assertEqual(5, len(results["tests"]))
-        self.assertEqual(15, sum([test["score"] for test in results["tests"]]))
-        self.assertTrue(all(["output" in test for test in results["tests"]]))
+        self.assertEqual(15, sum(test["score"] for test in results["tests"]))
+        self.assertTrue(all("output" in test for test in results["tests"]))
 
         self.assertIn("leaderboard", results)
         self.assertEqual(2, len(results["leaderboard"]))

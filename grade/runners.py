@@ -37,7 +37,7 @@ class GradedRunner(TextTestRunner):
                     "name": t.__qualname__,
                     "max_score": 0,
                     "score": "0",
-                    "output": ";\n".join([f"{e[0]}: {e[1]}" for e in results.errors]),
+                    "output": ";\n".join(f"{e[0]}: {e[1]}" for e in results.errors),
                 }
                 for k, t in tests
             ]
