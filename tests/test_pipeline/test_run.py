@@ -13,23 +13,19 @@ class TestRun(unittest.TestCase):
         results = Run(["ls"])()
         self.assertEqual(results.returncode, 0)
         self.assertGreater(results.duration, 0)
-        return
 
     def test_nonexistant(self):
         with self.assertRaises(FileNotFoundError):
             Run(["idonotexist"])()
-        return
 
     def test_shell_command(self):
         results = Run("echo test | grep test", shell=True)()
         self.assertEqual(results.returncode, 0)
         self.assertGreater(results.duration, 0)
-        return
 
     def test_timeout(self):
         with self.assertRaises(TimeoutError):
             Run(["sleep", "30"], timeout=1)()
-        return
 
     @staticmethod
     def test_input():

@@ -37,7 +37,6 @@ class Run:
         self.command = command
         self.input = input
         self.kwargs = kwargs
-        return
 
     def __call__(self, results: CompletedProcess = None) -> CompletedProcess:
         if callable(self.input):

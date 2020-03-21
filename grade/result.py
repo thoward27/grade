@@ -83,7 +83,6 @@ class Result(unittest.TextTestResult):
         self.updateTests(test)
         self.updateLeaderboard(test)
         super().stopTest(test)
-        return
 
     def updateTests(self, test):
         result = {
@@ -104,7 +103,6 @@ class Result(unittest.TextTestResult):
             result["visibility"] = visibility
 
         self.data["tests"].append(result)
-        return
 
     def updateLeaderboard(self, test):
         if self.getattr(test, "__leaderboard_title__") is not None:
@@ -115,4 +113,3 @@ class Result(unittest.TextTestResult):
                     "order": self.getattr(test, "__leaderboard_order__"),
                 }
             )
-        return

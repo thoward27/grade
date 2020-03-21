@@ -7,7 +7,6 @@ class CompletedProcess:
         self.process: Subprocess = process
         # TODO: Duration should be a stack of durations for each run call.
         self.duration: Union[float, None] = None
-        return
 
     @property
     def stderr(self):
@@ -28,4 +27,3 @@ class CompletedProcess:
     @returncode.setter
     def returncode(self, value):
         self.process.returncode = value
-        return

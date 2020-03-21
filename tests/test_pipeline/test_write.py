@@ -24,7 +24,6 @@ class TestWrite(unittest.TestCase):
         with open("temp", "r") as f:
             self.assertEqual(results.stdout, f.read())
         os.remove("temp")
-        return
 
     def test_stderr(self):
         results = Run(">&2 echo error", shell=True)()
@@ -37,7 +36,6 @@ class TestWrite(unittest.TestCase):
         with open("temp", "r") as f:
             self.assertEqual(results.stderr, f.read())
         os.remove("temp")
-        return
 
     def test_outputs(self):
         results = Run(["ls"])()
@@ -50,4 +48,3 @@ class TestWrite(unittest.TestCase):
         with open("temp.stderr", "r") as f:
             self.assertEqual(results.stderr, f.read())
         os.remove("temp.stderr")
-        return

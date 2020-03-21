@@ -28,7 +28,6 @@ def report(ctx):
 @click.argument("output", type=click.File("w"), default="-")
 def gradescope(output):
     json(output)
-    return
 
 
 @report.command()
@@ -37,7 +36,6 @@ def json(output):
     import json
 
     output.write(json.dumps(GRADES, indent=4, sort_keys=True))
-    return
 
 
 @report.command()
@@ -55,4 +53,3 @@ def markdown(output):
             ]
         )
     )
-    return

@@ -44,7 +44,6 @@ class Not:
 
     def __init__(self, callback: Callback):
         self.callback = callback
-        return
 
     def __call__(self, results: CompletedProcess) -> CompletedProcess:
         try:
@@ -62,7 +61,6 @@ class Or:
 
     def __init__(self, *callbacks):
         self.callbacks = callbacks
-        return
 
     def __call__(self, results: CompletedProcess) -> CompletedProcess:
         for callback in self.callbacks:
@@ -81,7 +79,6 @@ class AssertFaster:
 
     def __init__(self, duration):
         self.duration = duration
-        return
 
     def __call__(self, results: CompletedProcess) -> CompletedProcess:
         if results.duration > self.duration:
@@ -120,7 +117,6 @@ class AssertExitStatus:
 
     def __init__(self, returncode: int):
         self.returncode = returncode
-        return
 
     def __call__(self, results: CompletedProcess) -> CompletedProcess:
         if results.returncode != self.returncode:

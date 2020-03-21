@@ -28,7 +28,6 @@ class TestPipeline(unittest.TestCase):
     @staticmethod
     def test_passes():
         Pipeline(Run(["ls"]), AssertExitSuccess())
-        return
 
     @staticmethod
     def test_pass_multiple():
@@ -40,7 +39,6 @@ class TestPipeline(unittest.TestCase):
         [self.assertTrue(callable(callback)) for callback in pipeline]
         self.assertIsInstance(pipeline[1], AssertExitSuccess)
         self.assertEqual(len(pipeline), 4)
-        return
 
 
 class TestLambda(unittest.TestCase):
@@ -49,7 +47,6 @@ class TestLambda(unittest.TestCase):
         results = Run(["ls"])()
         results = Lambda(lambda r: r)(results)
         self.assertIsInstance(results, CompletedProcess)
-        return
 
     @staticmethod
     def randomFunction(results):
@@ -61,4 +58,3 @@ class TestLambda(unittest.TestCase):
         results = Run(["ls"])()
         results = Lambda(self.randomFunction)(results)
         self.assertIsInstance(results, CompletedProcess)
-        return

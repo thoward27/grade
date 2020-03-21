@@ -29,18 +29,15 @@ class TestAsserts(unittest.TestCase):
     def test_exit_success():
         results = Run(["ls"])()
         AssertExitSuccess()(results)
-        return
 
     @staticmethod
     def test_exit_failure():
         results = Run(["ls", "--iamnotanarg"])()
         AssertExitFailure()(results)
-        return
 
     @staticmethod
     def test_assert_exit_status():
         Pipeline(Run(["echo", "hello world"]), AssertExitStatus(0), Not(AssertExitStatus(1)),)()
-        return
 
     @unittest.skipIf(shutil.which("valgrind") is None, "Need valgrind.")
     @staticmethod
@@ -53,7 +50,6 @@ class TestAsserts(unittest.TestCase):
 
         results = Run("grep pip < README.md", shell=True)()
         AssertValgrindSuccess()(results)
-        return
 
     def test_not(self):
         Pipeline(
@@ -63,7 +59,6 @@ class TestAsserts(unittest.TestCase):
         )()
         with self.assertRaises(AssertionError):
             Pipeline(Run(["echo", "hello world"]), Not(AssertStdoutContains(strings=["hello"])))()
-        return
 
     def test_or(self):
         Pipeline(
@@ -73,12 +68,10 @@ class TestAsserts(unittest.TestCase):
             Pipeline(
                 Run(["echo", "hello world"]), Or(AssertStdoutContains(["goodbye"]), AssertStderrContains(["goodbye"]))
             )()
-        return
 
     @staticmethod
     def test_faster():
         Pipeline(Run(["echo", "hello world"]), AssertFaster(10), Not(AssertFaster(0)),)()
-        return
 
 
 class TestAssertContains(unittest.TestCase):
@@ -103,14 +96,12 @@ class TestAssertStdoutMatches(unittest.TestCase):
         results = Run(["echo", "hello_world"])()
         with self.assertRaises(AssertionError):
             AssertStdoutMatches("goodbye_world")(results)
-        return
 
     def test_stdout_matches(self):
         """ What if stdout does match? """
         results = Run(["echo", "hello_world"])()
         results = AssertStdoutMatches("hello_world")(results)
         self.assertIsInstance(results, CompletedProcess)
-        return
 
     def test_inferring_filename(self):
         """ Can we infer filename if conventions are followed? """
@@ -120,7 +111,6 @@ class TestAssertStdoutMatches(unittest.TestCase):
         self.assertIsInstance(results, CompletedProcess)
         os.remove("hello_world.stdout")
         os.remove("hello_world.stderr")
-        return
 
     def test_cannot_infer_filename(self):
         """ What if there is no file to infer from? """
@@ -130,7 +120,6 @@ class TestAssertStdoutMatches(unittest.TestCase):
         results = Run(["echo", "hello world"])()
         with self.assertRaises(AssertionError):
             AssertStdoutMatches()(results)
-        return
 
     def test_cannot_infer_shell(self):
         """ Should not be able to infer filenames when shell=True """
@@ -142,7 +131,6 @@ class TestAssertStdoutMatches(unittest.TestCase):
         results = Run(["echo", "hello"])()
         with self.assertRaises(ValueError):
             AssertStdoutMatches("hello", "world")(results)
-        return
 
     @staticmethod
     def test_passing_filename():
@@ -151,7 +139,6 @@ class TestAssertStdoutMatches(unittest.TestCase):
             f.write("hello")
         AssertStdoutMatches(filepath="hello.stdout")(results)
         os.remove("hello.stdout")
-        return
 
 
 class TestAssertStderrMatches(unittest.TestCase):
@@ -160,7 +147,6 @@ class TestAssertStderrMatches(unittest.TestCase):
         results = Run(">&2 echo hello_world", shell=True)()
         with self.assertRaises(AssertionError):
             AssertStderrMatches("goodbye_world")(results)
-        return
 
     def test_stderr_matches(self):
         """ What if stderr does match? """
@@ -182,20 +168,17 @@ class TestAssertStderrMatches(unittest.TestCase):
         results = Run(["grep", "-h"])()
         with self.assertRaises(AssertionError):
             AssertStderrMatches()(results)
-        return
 
     def test_cannot_infer_shell(self):
         """ Should not be able to infer filename when shell=True """
         results = Run(">&2 echo hello_world", shell=True)()
         with self.assertRaises(ValueError):
             AssertStderrMatches()(results)
-        return
 
     def test_passing_both(self):
         results = Run(">&2 echo hello", shell=True)()
         with self.assertRaises(ValueError):
             AssertStderrMatches("hello", "world")(results)
-        return
 
     @staticmethod
     def test_passing_filename():
@@ -204,7 +187,6 @@ class TestAssertStderrMatches(unittest.TestCase):
             f.write("hello")
         AssertStderrMatches(filepath="hello.stderr")(results)
         os.remove("hello.stderr")
-        return
 
 
 class TestAssertRegex(unittest.TestCase):
@@ -214,7 +196,6 @@ class TestAssertRegex(unittest.TestCase):
         self.assertIsInstance(results, CompletedProcess)
         with self.assertRaises(AssertionError) as e:
             AssertStdoutRegex(r"idontthinkthisshouldbehere")(results)
-        return
 
     def test_regex_stderr(self):
         results = Run(">&2 echo hello_world", shell=True)()
@@ -222,7 +203,6 @@ class TestAssertRegex(unittest.TestCase):
         self.assertIsInstance(results, CompletedProcess)
         with self.assertRaises(AssertionError):
             AssertStderrRegex(f"bah humbug")(results)
-        return
 
 
 class TestCheck(unittest.TestCase):
@@ -233,18 +213,15 @@ class TestCheck(unittest.TestCase):
         results = Run(["ls"])()
         results = Check(AssertExitSuccess())(results)
         self.assertEqual(results.returncode, 0)
-        return
 
     def test_check_failure(self):
         """ Check should set results to successful by asserting exit failure. """
         results = Run(["grep", "--asdfghjk"])()
         results = Check(AssertExitFailure())(results)
         self.assertEqual(results.returncode, 0)
-        return
 
     def test_check_successful_failure(self):
         """ Checks a failure for success. """
         results = Run(["grep", "--notanarg"])()
         results = Check(AssertExitSuccess())(results)
         self.assertNotEqual(results.returncode, 0)
-        return

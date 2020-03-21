@@ -52,14 +52,12 @@ class TestRunner(unittest.TestCase):
 
             self.assertTrue(True)
             print("Output when successful")
-            return
 
         def test_partial_credit(self):
             self.weight = 10
             self.score = 5
             self.assertTrue(False, "Didn't quite make it.")
             self.score = self.score + 5
-            return
 
         @weight(10)
         @leaderboard("fastest fail")
@@ -67,14 +65,12 @@ class TestRunner(unittest.TestCase):
             """ Testing something that fails. """
             set_leaderboard_score(100)
             self.assertTrue(False)
-            return
 
         @visibility("after_due_date")
         def test_failure(self):
             print("Some output.")
             self.weight = 10
             self.assertFalse(True)
-            return
 
         def test_error(self):
             self.weight = 10
@@ -99,14 +95,12 @@ class TestRunner(unittest.TestCase):
         self.assertIn("execution_time", results)
 
         self.assertIsInstance(results["tests"][0]["output"], str)
-        return
 
     def test_markdown_successful(self):
         suite = unittest.TestLoader().loadTestsFromTestCase(self.TestPassing)
         results = GradedRunner().run(suite)
         results = results.markdown
         self.assertIsInstance(results, str)
-        return
 
     class TestFailing(ScoringMixin, unittest.TestCase):
         def setUp(self):
@@ -131,7 +125,6 @@ class TestRunner(unittest.TestCase):
         self.assertIn("visibility", results)
 
         self.assertIn("execution_time", results)
-        return
 
 
 class TestClassSetupFails(unittest.TestCase):

@@ -27,7 +27,6 @@ class Tests(mixins.ScoringMixin, unittest.TestCase):
         A common use-case for this block is compilation.
         """
         Run(["ls"])()
-        return
 
     def setUp(self) -> None:
         """ Within this block, we ensure we have everything we need to run the tests.
@@ -38,7 +37,6 @@ class Tests(mixins.ScoringMixin, unittest.TestCase):
         Warning: If anything in this block fails, the student will receive a 0.
         """
         self.require("example.py")
-        return
 
     def test_compile(self):
         """ Test working compilation.
@@ -48,7 +46,6 @@ class Tests(mixins.ScoringMixin, unittest.TestCase):
         """
         self.weight = 1  # Set the weight of the unit test (max score)
         self.assertTrue(True)
-        return
 
     # For most grading functions, we provide both methods and decorators.
     # There is no functional difference between methods and decorators.
@@ -71,7 +68,6 @@ class Tests(mixins.ScoringMixin, unittest.TestCase):
         # Since the student made it to the end and we set a partial score,
         # we must finish the test by setting their score to full credit.
         self.score = self.weight
-        return
 
     # Grade executable files.
 
@@ -85,7 +81,6 @@ class Tests(mixins.ScoringMixin, unittest.TestCase):
         with a call to Run(), which generates the initial CompletedProcess.
         """
         Pipeline(Run(["ls"]), AssertExitSuccess(), AssertValgrindSuccess())()
-        return
 
     def test_executable_multiple_times(self):
         """ Checking multiple runs of an executable.
@@ -113,7 +108,6 @@ class Tests(mixins.ScoringMixin, unittest.TestCase):
         # Or, you can also award partial credit for each testcase:
         results = PartialCredit(map(pipeline, testcases), 10)()
         self.score = results.score
-        return
 
     # Any output written to stdout or stderr is captured and included
     # in the tests' output value.
@@ -142,7 +136,6 @@ class Tests(mixins.ScoringMixin, unittest.TestCase):
             self.score = 10
         elif results.duration < 10_000:
             self.score = 5
-        return
 
 
 if __name__ == "__main__":
