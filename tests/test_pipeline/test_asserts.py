@@ -25,22 +25,26 @@ from grade.pipeline import (
 
 
 class TestAsserts(unittest.TestCase):
-    def test_exit_success(self):
+    @staticmethod
+    def test_exit_success():
         results = Run(["ls"])()
         AssertExitSuccess()(results)
         return
 
-    def test_exit_failure(self):
+    @staticmethod
+    def test_exit_failure():
         results = Run(["ls", "--iamnotanarg"])()
         AssertExitFailure()(results)
         return
 
-    def test_assert_exit_status(self):
+    @staticmethod
+    def test_assert_exit_status():
         Pipeline(Run(["echo", "hello world"]), AssertExitStatus(0), Not(AssertExitStatus(1)),)()
         return
 
     @unittest.skipIf(shutil.which("valgrind") is None, "Need valgrind.")
-    def test_valgrind(self):
+    @staticmethod
+    def test_valgrind():
         results = Run(["ls"])()
         AssertValgrindSuccess()(results)
 
@@ -71,7 +75,8 @@ class TestAsserts(unittest.TestCase):
             )()
         return
 
-    def test_faster(self):
+    @staticmethod
+    def test_faster():
         Pipeline(Run(["echo", "hello world"]), AssertFaster(10), Not(AssertFaster(0)),)()
         return
 
@@ -139,7 +144,8 @@ class TestAssertStdoutMatches(unittest.TestCase):
             AssertStdoutMatches("hello", "world")(results)
         return
 
-    def test_passing_filename(self):
+    @staticmethod
+    def test_passing_filename():
         results = Run(["echo", "hello"])()
         with open("hello.stdout", "w") as f:
             f.write("hello")
@@ -191,7 +197,8 @@ class TestAssertStderrMatches(unittest.TestCase):
             AssertStderrMatches("hello", "world")(results)
         return
 
-    def test_passing_filename(self):
+    @staticmethod
+    def test_passing_filename():
         results = Run(">&2 echo hello", shell=True)()
         with open("hello.stderr", "w") as f:
             f.write("hello")
