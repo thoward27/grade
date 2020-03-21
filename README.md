@@ -7,6 +7,8 @@ A python package focused on making autograding easy, especially for executable p
 [![AGPL License](https://img.shields.io/github/license/thoward27/grade)](https://github.com/thoward27/grade/blob/master/LICENSE)
 [![Code Quality](https://img.shields.io/lgtm/grade/python/github/thoward27/grade)](https://lgtm.com/projects/g/thoward27/grade/context:python)
 [![codecov](https://codecov.io/gh/thoward27/grade/branch/master/graph/badge.svg)](https://codecov.io/gh/thoward27/grade)
+[![BCH compliance](https://bettercodehub.com/edge/badge/thoward27/grade?branch=master)](https://bettercodehub.com/)
+[![DeepSource](https://static.deepsource.io/deepsource-badge-light-mini.svg)](https://deepsource.io/gh/thoward27/grade/?ref=repository-badge)
 
 ---
 
