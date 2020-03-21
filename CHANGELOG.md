@@ -1,3 +1,8 @@
+##  v2.1.19
+
+### Performance
+* Remove unnecessary comprehension (d13e26d5bd359b1694d78385f1dff5853df767cf)
+
 ##  v2.1.18
 
 ### Fix
