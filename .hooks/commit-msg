@@ -18,6 +18,7 @@ TYPES = {
     'revert': 'changes that revert another commit.', 
     'style': 'changes that do not affect the meaning of the code.', 
     'test': 'changes to the test suite.',
+    'chore': 'things that mitigate warnings'
 }
 
 PATTERN = re.compile(r'^(?P<type>{})(\([a-z ]+\))?\!?: \w+.*$'.format('|'.join(TYPES.keys())), re.M)

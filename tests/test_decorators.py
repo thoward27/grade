@@ -3,7 +3,11 @@
 
 import unittest
 
-from grade.decorators import *
+from grade.decorators import (
+    weight,
+    visibility,
+    leaderboard,
+)
 
 
 class TestDecorators(unittest.TestCase):

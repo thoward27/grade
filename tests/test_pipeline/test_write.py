@@ -1,7 +1,13 @@
 import os
 import unittest
 
-from grade.pipeline import *
+from grade.pipeline import (
+    CompletedProcess,
+    Run,
+    WriteStdout,
+    WriteStderr,
+    WriteOutputs,
+)
 
 
 class TestWrite(unittest.TestCase):

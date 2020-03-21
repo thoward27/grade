@@ -1,6 +1,11 @@
 import unittest
 
-from grade.pipeline import *
+from grade.pipeline import (
+    Run,
+    Pipeline,
+    AssertExitSuccess,
+    AssertStdoutMatches,
+)
 
 
 class TestRun(unittest.TestCase):

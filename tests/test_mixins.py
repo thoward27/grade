@@ -2,7 +2,7 @@
 """
 import unittest
 
-from grade.mixins import *
+from grade.mixins import ScoringMixin
 
 
 class TestScoringMixin(ScoringMixin, unittest.TestCase):
