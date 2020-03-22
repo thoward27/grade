@@ -62,11 +62,13 @@ class TestAsserts(unittest.TestCase):
 
     def test_or(self):
         Pipeline(
-            Run(["echo", "hello world"]), Or(AssertStdoutContains(["goodbye"]), AssertStdoutContains(["hello"])),
+            Run(["echo", "hello world"]),
+            Or(AssertStdoutContains(["goodbye"]), AssertStdoutContains(["hello"])),
         )()
         with self.assertRaises(AssertionError):
             Pipeline(
-                Run(["echo", "hello world"]), Or(AssertStdoutContains(["goodbye"]), AssertStderrContains(["goodbye"]))
+                Run(["echo", "hello world"]),
+                Or(AssertStdoutContains(["goodbye"]), AssertStderrContains(["goodbye"])),
             )()
 
     @staticmethod

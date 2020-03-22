@@ -1,8 +1,7 @@
-import logging
 from collections import deque
-from typing import Iterator, Union, List
 from itertools import cycle
-from typing import Iterable
+import logging
+from typing import Iterator, Union, List, Iterable
 
 from .pipeline import Pipeline
 

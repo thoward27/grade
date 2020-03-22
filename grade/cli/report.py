@@ -11,7 +11,10 @@ def load():
 
 def score():
     # TODO: This should be stored in original output.
-    return (sum(test["score"] for test in GRADES["tests"]), sum(test["max_score"] for test in GRADES["tests"]))
+    return (
+        sum(test["score"] for test in GRADES["tests"]),
+        sum(test["max_score"] for test in GRADES["tests"]),
+    )
 
 
 @click.group(invoke_without_command=True)

@@ -19,7 +19,9 @@ class GradedRunner(TextTestRunner):
         tb_locals: bool = False,
         visibility: "str" = "visible",
     ) -> None:
-        super().__init__(stream, descriptions, verbosity, failfast, buffer, Result, warnings, tb_locals=tb_locals)
+        super().__init__(
+            stream, descriptions, verbosity, failfast, buffer, Result, warnings, tb_locals=tb_locals
+        )
         self.visibility = visibility
 
     def run(self, test) -> Result:

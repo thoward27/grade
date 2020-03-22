@@ -44,7 +44,9 @@ class TestPartialCredit(unittest.TestCase):
         self.assertEqual(results.score, 221)
 
     def test_value_list_some_fail(self):
-        pipelines = map(lambda t: Pipeline(Run([t]), AssertExitSuccess()), ["ls", "void", "ls", "void"])
+        pipelines = map(
+            lambda t: Pipeline(Run([t]), AssertExitSuccess()), ["ls", "void", "ls", "void"]
+        )
         values = [10, 1]  # 10, 1
         logging.disable(logging.CRITICAL)
         results = PartialCredit(pipelines, values)()

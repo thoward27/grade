@@ -120,7 +120,9 @@ class AssertExitStatus:
 
     def __call__(self, results: CompletedProcess) -> CompletedProcess:
         if results.returncode != self.returncode:
-            raise AssertionError(f"{results.args} return {results.returncode}, expected {self.returncode}")
+            raise AssertionError(
+                f"{results.args} return {results.returncode}, expected {self.returncode}"
+            )
         return results
 
 

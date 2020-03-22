@@ -70,8 +70,8 @@ class ScoringMixin:
 
     @property
     def visibility(self) -> str:
-        """ Returns visibility of the test. 
-        
+        """ Returns visibility of the test.
+
         This controls whether or not students should see the failing testcase.
         """
         return getattr(self.getTest(), "__visibility__", "visible")
@@ -84,7 +84,11 @@ class ScoringMixin:
     @property
     def leaderboard(self) -> dict:
         """ Returns a dictionary with all leaderboard attributes. """
-        return {"title": self.leaderboardTitle, "order": self.leaderboardOrder, "score": self.leaderboardScore}
+        return {
+            "title": self.leaderboardTitle,
+            "order": self.leaderboardOrder,
+            "score": self.leaderboardScore,
+        }
 
     @property
     def leaderboardTitle(self) -> str:

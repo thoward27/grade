@@ -69,7 +69,11 @@ class Result(unittest.TextTestResult):
         return name
 
     def getScore(self, test):
-        return self.getattr(test, "__score__", 0 if self.getExceptions(test) else self.getattr(test, "__weight__", 0))
+        return self.getattr(
+            test,
+            "__score__",
+            0 if self.getExceptions(test) else self.getattr(test, "__weight__", 0),
+        )
 
     def addError(self, test, err):
         super().addError(test, err)
