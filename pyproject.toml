@@ -28,7 +28,7 @@ version_variable = "pyproject.toml:version"
 commit_subject = "build: version bump to v{version}"
 
 [tool.black]
-line-length = 120
+line-length = 100
 
 [build-system]
 requires = ["poetry>=0.12"]

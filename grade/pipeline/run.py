@@ -27,7 +27,9 @@ class Run:
     calls in the pipeline.
     """
 
-    _run = partial(run, stderr=PIPE, stdout=PIPE, timeout=60 * 10, encoding="utf-8", errors="ignore")
+    _run = partial(
+        run, stderr=PIPE, stdout=PIPE, timeout=60 * 10, encoding="utf-8", errors="ignore"
+    )
 
     def run(self, command, **kwargs):
         results = self._run(command, **kwargs)

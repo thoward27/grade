@@ -18,8 +18,8 @@ class Pipeline:
     you to chain together Run() with things like AssertExitSuccess().
 
     It does this by passing a CompletedProcess object to each successive
-    callback, allowing each callback to modify or replace it during 
-    execution of the pipeline. 
+    callback, allowing each callback to modify or replace it during
+    execution of the pipeline.
 
     All Pipelines should start with a call to Run().
 

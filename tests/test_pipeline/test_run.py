@@ -36,6 +36,9 @@ class TestRun(unittest.TestCase):
             AssertStdoutMatches("## Setup"),
         )()
         Pipeline(
-            Run(["grep", "hello", "-"], input="hello world\nhear me test things!"), AssertStdoutMatches("hello world")
+            Run(["grep", "hello", "-"], input="hello world\nhear me test things!"),
+            AssertStdoutMatches("hello world"),
         )()
-        Pipeline(Run(["python", "-c", "x = input(); print(x)"], input="5"), AssertStdoutMatches("5"))()
+        Pipeline(
+            Run(["python", "-c", "x = input(); print(x)"], input="5"), AssertStdoutMatches("5")
+        )()

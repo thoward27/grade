@@ -21,15 +21,15 @@ def static(name, value):
 
 weight = partial(static, "__weight__")
 weight.__doc__ = """ Simple decorator to add a __weight__ property to a function
-    
+
     Usage: @weight(3.0)
     """
 
 visibility = partial(static, "__visibility__")
 visibility.__doc__ = """ Simple decorator to add a __visibility__ property to a function
-    
+
     Usage: @visibility("hidden")
-    
+
     Options for the visibility field are as follows:
     - `hidden`: test case will never be shown to students
     - `after_due_date`: test case will be shown after the assignment's due date has passed
@@ -57,7 +57,7 @@ def leaderboard(name=None, order="desc"):
         def test_highscore(set_leaderboard_score=None):
             set_leaderboard_score(42)
 
-    You can also use the ScoringMixin, 
+    You can also use the ScoringMixin,
     which provides a setter for leaderboardScore.
     """
 

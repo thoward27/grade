@@ -94,7 +94,8 @@ class AssertExitSuccess:
             raise AssertionError(
                 "\n".join(
                     [
-                        f"{results.args} should have exited successfully. {results.returncode} != 0",
+                        f"{results.args} should have exited successfully.",
+                        f"{results.returncode} != 0",
                         results.stdout,
                         results.stderr,
                     ]
@@ -120,7 +121,9 @@ class AssertExitStatus:
 
     def __call__(self, results: CompletedProcess) -> CompletedProcess:
         if results.returncode != self.returncode:
-            raise AssertionError(f"{results.args} return {results.returncode}, expected {self.returncode}")
+            raise AssertionError(
+                f"{results.args} return {results.returncode}, expected {self.returncode}"
+            )
         return results
 
 
@@ -129,7 +132,7 @@ class AssertValgrindSuccess:
 
     def __call__(self, results: CompletedProcess) -> CompletedProcess:
         if type(results.args) is list:
-            # TODO: Add --exit-on-first-error=yes back in when valgrind > 3.13 is available on ubuntu LTS
+            # TODO: Add --exit-on-first-error=yes back in when valgrind > 3.13 is available
             results = Run(["valgrind", "-q", "--error-exitcode=1", *results.args])()
         elif type(results.args) is str:
             results = Run(f"valgrind -q --error-exitcode=1 {results.args}", shell=True)()
@@ -170,9 +173,14 @@ class AssertStdoutMatches:
 
         if results.stdout.strip() != self.stdout.strip():
             raise AssertionError(
-                f"{results.args} stdout does not match expected.\n{self.stdout.strip()} !=\n{results.stdout.strip()}"
+                "\n".join(
+                    [
+                        f"{results.args} stdout does not match expected.",
+                        f"{self.stdout.strip()} !=",
+                        f"{results.stdout.strip()}",
+                    ]
+                )
             )
-
         return results
 
 
@@ -211,9 +219,14 @@ class AssertStderrMatches:
 
         if results.stderr.strip() != self.stderr.strip():
             raise AssertionError(
-                f"{results.args} stderr does not match expected.\n{self.stderr.strip()} !=\n{results.stderr.strip()}"
+                "\n".join(
+                    [
+                        f"{results.args} stderr does not match expected.",
+                        f"{self.stderr.strip()} !=",
+                        f"{results.stderr.strip()}",
+                    ]
+                )
             )
-
         return results
 
 

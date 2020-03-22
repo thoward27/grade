@@ -13,7 +13,7 @@ def student_function(x: list, m: int) -> list:
 
 class Tests(mixins.ScoringMixin, unittest.TestCase):
     """ An example TestCase, with the ScoringMixing.
-    
+
     Grade requires a TestCase as a starting point, from there,
     we can give each test function a weight, assign partial credit,
     and much more!

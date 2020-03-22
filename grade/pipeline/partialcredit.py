@@ -1,8 +1,7 @@
-import logging
 from collections import deque
-from typing import Iterator, Union, List
 from itertools import cycle
-from typing import Iterable
+import logging
+from typing import Iterator, Union, List, Iterable
 
 from .pipeline import Pipeline
 
@@ -23,9 +22,6 @@ class PartialCredit:
     A.max_score == 1
     B.max_score == 2
     C.max_score == 1
-
-    :param pipelines: an iterator of Pipeline objects.
-    :param value: total value for the pipeline; either an int, or a list of ints (accessed via modulo arithmetic).
     """
 
     def __init__(self, pipelines: Iterator[Pipeline], value: Union[int, List[int]]):
