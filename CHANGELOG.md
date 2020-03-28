@@ -1,3 +1,8 @@
+##  v3.0.0
+
+### Breaking
+* cli report format syntax has changed, see CLI help for more.  (ff9188182fec3c6a8468a143cb7c87e3b6c1d8c8)
+
 ##  v2.1.19
 
 ### Performance
