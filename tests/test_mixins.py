@@ -33,7 +33,7 @@ class TestScoringMixin(ScoringMixin, unittest.TestCase):
 
         x = Test()
         x.test_something()
-        self.assertEqual(x.test_something.__score__, 10)
+        self.assertEqual(x.test_something._g_score, 10)
 
     def test_weight(self):
         """ Can we modify and recall a tests weight? """
@@ -45,7 +45,7 @@ class TestScoringMixin(ScoringMixin, unittest.TestCase):
 
         x = Test()
         x.test_something()
-        self.assertEqual(x.test_something.__weight__, 10)
+        self.assertEqual(x.test_something._g_weight, 10)
 
     def test_visibility(self):
         """ Can we modify and recall a tests visibility? """
@@ -57,7 +57,7 @@ class TestScoringMixin(ScoringMixin, unittest.TestCase):
 
         x = Test()
         x.test_something()
-        self.assertEqual(x.test_something.__visibility__, "invisible")
+        self.assertEqual(x.test_something._g_visibility, "invisible")
 
     def test_leaderboard(self):
         """ Can we modify and recall a tests leaderboard standing? """
@@ -71,6 +71,6 @@ class TestScoringMixin(ScoringMixin, unittest.TestCase):
 
         x = Test()
         x.test_something()
-        self.assertEqual(x.test_something.__leaderboard_title__, "Runtime")
-        self.assertEqual(x.test_something.__leaderboard_order__, "desc")
-        self.assertEqual(x.test_something.__leaderboard_score__, 100)
+        self.assertEqual(x.test_something._g_leaderboard_title, "Runtime")
+        self.assertEqual(x.test_something._g_leaderboard_order, "desc")
+        self.assertEqual(x.test_something._g_leaderboard_score, 100)

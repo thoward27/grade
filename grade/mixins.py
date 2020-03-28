@@ -51,22 +51,22 @@ class ScoringMixin:
     @property
     def weight(self) -> int:
         """ Returns the weight of the test. """
-        return getattr(self.getTest(), "__weight__", 0)
+        return getattr(self.getTest(), "_g_weight", 0)
 
     @weight.setter
     def weight(self, weight: int) -> None:
         """ Sets the weight of the test. """
-        self.setattr("__weight__", weight)
+        self.setattr("_g_weight", weight)
 
     @property
     def score(self) -> Union[int, float]:
         """ Returns the current score for the test. """
-        return getattr(self.getTest(), "__score__", 0)
+        return getattr(self.getTest(), "_g_score", 0)
 
     @score.setter
     def score(self, score: Union[int, float]) -> None:
         """ Sets the score for the test. """
-        self.setattr("__score__", score)
+        self.setattr("_g_score", score)
 
     @property
     def visibility(self) -> str:
@@ -74,12 +74,12 @@ class ScoringMixin:
 
         This controls whether or not students should see the failing testcase.
         """
-        return getattr(self.getTest(), "__visibility__", "visible")
+        return getattr(self.getTest(), "_g_visibility", "visible")
 
     @visibility.setter
     def visibility(self, visibility: str) -> None:
         """ Sets the visibility of the test. """
-        self.setattr("__visibility__", visibility)
+        self.setattr("_g_visibility", visibility)
 
     @property
     def leaderboard(self) -> dict:
@@ -93,28 +93,28 @@ class ScoringMixin:
     @property
     def leaderboardTitle(self) -> str:
         """ Returns the leaderboard title attribute for the test. """
-        return getattr(self.getTest(), "__leaderboard_title__", None)
+        return getattr(self.getTest(), "_g_leaderboard_title", None)
 
     @leaderboardTitle.setter
     def leaderboardTitle(self, title) -> None:
         """ Sets the leaderboard title attribute. """
-        self.setattr("__leaderboard_title__", title)
+        self.setattr("_g_leaderboard_title", title)
 
     @property
     def leaderboardOrder(self) -> str:
         """ Return the leaderboard order attribute. """
-        return getattr(self.getTest(), "__leaderboard_order__", None)
+        return getattr(self.getTest(), "_g_leaderboard_order", None)
 
     @leaderboardOrder.setter
     def leaderboardOrder(self, order) -> None:
         """ Sets the leaderboard order attribute. """
-        self.setattr("__leaderboard_order__", order)
+        self.setattr("_g_leaderboard_order", order)
 
     @property
     def leaderboardScore(self) -> Union[int, None]:
-        return getattr(self.getTest(), "__leaderboard_score__", None)
+        return getattr(self.getTest(), "_g_leaderboard_score", None)
 
     @leaderboardScore.setter
     def leaderboardScore(self, score) -> None:
         """ Sets the leaderboard score for the test. """
-        self.setattr("__leaderboard_score__", score)
+        self.setattr("_g_leaderboard_score", score)
