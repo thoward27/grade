@@ -8,7 +8,7 @@ sys.tracebacklimit = 0
 
 
 TYPES = {
-    'build': 'changes that affect the build system or dependancies.', 
+    'build': 'changes that affect the build system or dependencies.', 
     'ci': 'changes to CI configuration files and scripts.',
     'docs': 'changes to documentation.', 
     'feat': 'introduces a new feature.', 
