@@ -19,14 +19,14 @@ def static(name, value):
     return decorate
 
 
-weight = partial(static, "__weight__")
-weight.__doc__ = """ Simple decorator to add a __weight__ property to a function
+weight = partial(static, "_g_weight")
+weight.__doc__ = """ Simple decorator to add a _g_weight property to a function
 
     Usage: @weight(3.0)
     """
 
-visibility = partial(static, "__visibility__")
-visibility.__doc__ = """ Simple decorator to add a __visibility__ property to a function
+visibility = partial(static, "_g_visibility")
+visibility.__doc__ = """ Simple decorator to add a _g_visibility property to a function
 
     Usage: @visibility("hidden")
 
@@ -62,12 +62,12 @@ def leaderboard(name=None, order="desc"):
     """
 
     def decorate(func):
-        setattr(func, "__leaderboard_title__", name if name else func.__name__)
-        setattr(func, "__leaderboard_order__", order)
-        setattr(func, "__leaderboard_score__", None)
+        setattr(func, "_g_leaderboard_title", name if name else func.__name__)
+        setattr(func, "_g_leaderboard_order", order)
+        setattr(func, "_g_leaderboard_score", None)
 
         def set_score(value):
-            setattr(wrapper, "__leaderboard_score__", value)
+            setattr(wrapper, "_g_leaderboard_score", value)
 
         @wraps(func)
         def wrapper(*args, **kwargs):

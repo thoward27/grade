@@ -75,9 +75,7 @@ class Result(unittest.TextTestResult):
 
     def getScore(self, test):
         return self.getattr(
-            test,
-            "__score__",
-            0 if self.getExceptions(test) else self.getattr(test, "__weight__", 0),
+            test, "_g_score", 0 if self.getExceptions(test) else self.getattr(test, "_g_weight", 0),
         )
 
     def addError(self, test, err):
@@ -96,7 +94,7 @@ class Result(unittest.TextTestResult):
     def updateTests(self, test):
         result = {
             "name": self.getName(test),
-            "max_score": self.getattr(test, "__weight__", 0),
+            "max_score": self.getattr(test, "_g_weight", 0),
             "score": self.getScore(test),
         }
         # TODO: Walrus, won't need to calculate outputs if exceptions work.
@@ -107,18 +105,18 @@ class Result(unittest.TextTestResult):
         elif outputs:
             result["output"] = outputs
 
-        visibility = self.getattr(test, "__visibility__")
+        visibility = self.getattr(test, "_g_visibility")
         if visibility:
             result["visibility"] = visibility
 
         self.data["tests"].append(result)
 
     def updateLeaderboard(self, test):
-        if self.getattr(test, "__leaderboard_title__") is not None:
+        if self.getattr(test, "_g_leaderboard_title") is not None:
             self.data["leaderboard"].append(
                 {
-                    "name": self.getattr(test, "__leaderboard_title__"),
-                    "value": self.getattr(test, "__leaderboard_score__"),
-                    "order": self.getattr(test, "__leaderboard_order__"),
+                    "name": self.getattr(test, "_g_leaderboard_title"),
+                    "value": self.getattr(test, "_g_leaderboard_score"),
+                    "order": self.getattr(test, "_g_leaderboard_order"),
                 }
             )
