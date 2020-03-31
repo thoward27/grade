@@ -47,10 +47,10 @@ def report(format, output):
         )
 
     elif format == "gradescope":
-        output.write(json.dumps(grades, indent=4, sort_keys=True))
+        output.write(json.dumps(grades))
 
     elif format == "json":
-        output.write(json.dumps(grades))
+        output.write(json.dumps(grades, indent=4, sort_keys=True))
 
     else:
         print(str(grades))
