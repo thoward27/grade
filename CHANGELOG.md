@@ -1,3 +1,8 @@
+##  v3.0.1
+
+### Fix
+* Switching output format styles (190382e0fa3c1a8770d12f3e03307d8362b611b4)
+
 ##  v3.0.0
 
 ### Breaking
